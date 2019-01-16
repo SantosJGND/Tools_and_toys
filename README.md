@@ -13,6 +13,6 @@ a jupyter notebook to serve as tutorial.
 
 link to tutorial: [PCA and Fst](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/PCA_Fst_estimation/Euclidian_to_fst.ipynb)
 
-## Simulating Genomes. Accurate manipulation of known-truth
+## Simulating Genomes. Direct manipulation of known-truth
 
 link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
