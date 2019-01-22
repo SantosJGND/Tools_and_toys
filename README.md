@@ -16,3 +16,7 @@ link to tutorial: [PCA and Fst](https://nbviewer.jupyter.org/github/SantosJGND/T
 ## Simulating Genomes. Direct manipulation of known-truth
 
 link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
+
+## AMOVA calculation. 
+
+link to tutorial: [AMOVA_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/AMOVA/AMOVA_tutorial.ipynb)
