@@ -20,3 +20,15 @@ link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJ
 ## AMOVA calculation. 
 
 link to tutorial: [AMOVA_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/AMOVA/AMOVA_tutorial.ipynb)
+
+## Geno to Darwin.
+
+Extract genotype data to DataMatrix format. plink and .geno format (combined).
+
+- [README.md](/DARwin_kde)
+
+## MeanShift for structure analysis.
+
+Use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.
+
+link to tutorial: [MStarget_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/MS_target/MStarget_tutorial.ipynb)

@@ -84,3 +84,4 @@ def AMOVA_FM42(allele_profiles,populations,n_boot,metric= 'hamming'):
         Sign= scipy.stats.norm(np.mean(District),np.std(District)).cdf(PhiPT)
         
     return PhiPT,Sign
+# 
