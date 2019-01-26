@@ -14,7 +14,6 @@ def Struct_subplots_lib(Struct_lib,vector_lib,Npops= 4,Ncols= 2,range_diff= [0,1
     fig_subplots = tools.make_subplots(rows= int(len(Struct_lib) / float(Ncols)) + (len(Struct_lib) % Ncols > 0), cols=Ncols,
                              subplot_titles=tuple(titles))
 
-
     #####
     for gp in range(len(titles)):
 

@@ -2,6 +2,7 @@ import numpy as np
 import itertools as it
 
 import plotly.graph_objs as go
+import plotly
 from plotly.offline import download_plotlyjs, plot, iplot
 
 from sklearn.decomposition import PCA

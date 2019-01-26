@@ -42,7 +42,7 @@ def amova_cofactor(L,allele_profiles,populations,total_populations,metric= 'hamm
     
     SSAP = SSTOT - SSWP
     
-    squared_count_sum = float(sum([populations.count(x)**2 for x in list(set(populations))]))
+    squared_count_sum = float(sum([list(populations).count(x)**2 for x in list(set(populations))]))
     
     total_samples = float(L)
     total_pops = float(total_populations)

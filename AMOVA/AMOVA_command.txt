@@ -1,0 +1,44 @@
+
+qsub -N amova200 -V -q normal.q -l mem_free=30G -b y python -u AMOVA_PCA.py \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr01.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr02.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr03.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr04.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr05.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr06.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr07.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr09.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr10.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr12.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--admx /gs7k1/home/jgarcia/PO_Core/admx_CORE.txt \
+--amova \
+--supervised \
+-w 150 \
+--dr PCA \
+--random \
+-w 150 \
+--randN 10000 \
+--id AMOVA_I_rand \
+--out AMOVA_I_rand
+
+
+qsub -N amovaEasy -V -q normal.q -l mem_free=30G -b y python -u AMOVA_PCA.py \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--admx /gs7k1/home/jgarcia/PO_Core/admx_CORE.txt \
+--amova \
+--supervised \
+-w 150 \
+--dr PCA \
+--random \
+-w 150 \
+--randN 10000 \
+--id AMOVA_gitexample \
+--out AMOVA_gitexample
