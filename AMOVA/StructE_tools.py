@@ -27,6 +27,34 @@ def recursively_default_dict():
 ######################################################################################
 ### Load data 
 
+def read_selected(filename,mrg= 1000,CHR= 'CHR',start= 'start',end='end',ID= 'ID',sep= '\t'):
+    d= 0
+    
+    Genes= recursively_default_dict()
+    
+    Input= open(filename,'r')
+    for line in Input:
+        if d== 0:
+            Names= line.strip().split()
+            print('columns: {}'.format(Names))
+            cols= {
+                Names[x]:x for x in range(len(Names))
+            }
+            
+            d += 1
+            continue
+        
+        line= line.strip().split()
+        
+        chrom= int(line[cols[CHR]])
+        i1= int(line[cols[start]]) - mrg
+        i2= int(line[cols[end]]) + mrg
+        loc= line[cols[ID]]
+        
+        Genes[chrom][i1]= [i2, loc]
+    
+    return Genes
+
 
 def FAMread(Famfile):
     '''

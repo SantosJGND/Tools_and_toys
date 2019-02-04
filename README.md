@@ -1,34 +1,58 @@
-# Tools and Toys
+![logo](GH_logo.png)
 
-In the course of my work i have come to rely on or identify some blocks of code that
-proved to be of particular use. Some of this code was conceptually or structurally
-sufficiently complicated to warrant several modules and a framework of application.
 
-This repository was created with the view in mind of sharing those blocks of code.
-In doing this it has served another purpose, that of disciplining myself to render 
-my code more accessible to others. Each tool or package is accompanied with
-a jupyter notebook to serve as tutorial. 
+# Tools for Genetic and Genomic analysis
 
-## PCA and Fst
+**Disclaimer**: Analyses and algorithms presented below deal with high quality haploid or phased data.
 
-link to tutorial: [PCA and Fst](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/PCA_Fst_estimation/Euclidian_to_fst.ipynb)
+Genomics data sets that combine dense marker data with breadth of sampling are becoming availble for an increasing 
+number of species. Be it for historical inference, to study recombination, selection or to attempt genomic prediction,
+geneticists face in genomic data sets two main problems: (i) the more straighforward issue of size, i.e. computational 
+load and speed, (ii) the more abstract problem of harnessing statistics descriptive of local genomic structure to produce 
+informative outputs. 
 
-## Simulating Genomes. Direct manipulation of known-truth
+We need to work with measurements that are light and that we understand, that are informative of patterns in fundamental
+properties of the data. And we need to deploy these statistics and relate the distributions produced to that of genomic 
+position and/or other layers of information.
 
-link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
+This repository is structured to reflect these two steps. The first section, **Genetic Analysis**, is devoted to 
+descriptions of variation in single data sets. Alongside a conversion tool, functions are introduced that combine powerful
+python modules and dimensionality reduction for added speed in calculating correlation, using the fixation index *Fst*, and 
+among population variance, using AMOVA. 
 
-## AMOVA calculation. 
+The second section, **Genomic Analysis**, focuses on conducting analyses across data sets with different characteristics.
+In *Simulating Genomes: direct manipulation of known-truth*, the simulation procedure used to study the behaviour of the 
+statistics introduced in section I (see [Generating Samples](https://nbviewer.jupyter.org/github/SantosJGND/Genetic-data-analysis/blob/master/Notebooks/1.%20Generating_haplotypes.ipynb) for details) is developed to allow for more complex 
+patterns of data structure and admixture. The simulator is modular, to allow for easy break down of component functions and 
+facilitate development by the user. Under **MS_target** are introduced functions and protocol to use mean shift, a 
+density-based clustering algorithm, to characterise and visualize specific patterns, and to use this 
+information in novel data sets.
 
-link to tutorial: [AMOVA_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/AMOVA/AMOVA_tutorial.ipynb)
 
-## Geno to Darwin.
+## Genetic Analysis
 
-Extract genotype data to DataMatrix format. plink and .geno format (combined).
+- **Geno to Darwin** - *a script to extract genotypic data to DataMatrix format for dissimilarity analysis and representation using the software DARwin.* 
 
-- [README.md](/DARwin_kde)
+>plink and .geno format (combined). 
 
-## MeanShift for structure analysis.
+>[README.md](/DARwin_kde)
 
-Use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.
+- **PCA and Fst** - *calculate Fst from euclidean distances in PCA space. Use for prediction*
 
-link to tutorial: [MStarget_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/MS_target/MStarget_tutorial.ipynb)
+>link to tutorial: [PCA and Fst](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/PCA_Fst_estimation/Euclidian_to_fst.ipynb)
+
+- **AMOVA calculation** - *calculate among group variance using different metrics*
+
+>link to tutorial: [AMOVA_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/AMOVA/AMOVA_tutorial.ipynb)
+
+
+## Genomic Analysis
+
+- **Simulating Genomes: direct manipulation of known-truth** - *control pairwise Fst across data sets, allow for recombination and admixture*
+
+>link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
+
+
+- **MeanShift for structure analysis** - *use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.*
+
+>link to tutorial: [MStarget_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/MS_target/MStarget_tutorial.ipynb)

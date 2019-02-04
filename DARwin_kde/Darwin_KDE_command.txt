@@ -1,0 +1,78 @@
+
+qsub -N Jtrop_ind3 -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 11 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--dr PCA \
+--id Jtrop_ind3_chrom11 \
+--start 4300000 \
+--end 4800000 \
+--bornes 1000
+
+
+qsub -N Jtrop_ind2 -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 11 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--dr PCA \
+--id Jtrop_ind2_chrom11 \
+--start 5900000 \
+--end 6500000 \
+--bornes 1000
+
+
+qsub -N Jtrop_Jap -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 8 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--dr PCA \
+--id Jtrop_Japan_exchr8 \
+--start 15000000 \
+--end 15500000 \
+--bornes 1000
+
+
+qsub -N Jtrop_JapII -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 4 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr04.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--dr PCA \
+--id Jtrop_Japan_exchr4 \
+--start 1800000 \
+--end 2400000 \
+--bornes 1000
+
+
+qsub -N Jtrop_ind -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 11 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--dr PCA \
+--id Jtrop_indMiddle_exchr11 \
+--start 11300000 \
+--end 13300000 \
+--bornes 1000
+
+
+qsub -N Jtrop_ind -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 2 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr02.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--dr PCA \
+--id Jtrop_indshort_exchr02 \
+--start 24500000 \
+--end 26000000 \
+--bornes 1000
+

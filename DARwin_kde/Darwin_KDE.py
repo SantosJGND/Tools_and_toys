@@ -85,13 +85,15 @@ MissG, Gindex = BIMread(args.bim)
 
 GenoSUF = args.geno
 
-admx_lib, Crossed = read_refs(args.admx,Fam)
 refs_lib, Parents = read_refs(args.ref,Fam)
 N_pops= len(refs_lib)
 
-admx_lib.update(refs_lib)
+if args.admx:
+    admx_lib, Crossed = read_refs(args.admx,Fam)
 
-Geneo = admx_lib
+    refs_lib.update(admx_lib)
+
+Geneo = refs_lib
 
 CHR = args.CHR
 BIN = args.bin
@@ -108,61 +110,6 @@ print('Population labels: {}'.format(Geneo.keys()))
 print('Population Sizes: {}'.format([len(x) for x in Geneo.values()]))
 ####
 ####
-
-
-def Set_up(Chr0,Chr1,Sub,MissG):
-    Settings= []
-    for Chr in range(Chr0,Chr1):
-        Size= len(MissG[Chr])
-        Steps = [x for x in range(0,Size+1,int(Size/float(Sub)))]
-        Steps[-1] = Size
-        for i in range(len(Steps)-1):
-            Settings.append([Chr,Steps[i],Steps[i+1]-1])
-    return Settings
-
-
-def local_sampling_correct(data):
-    ncomp= data.shape[1]
-    pca = PCA(n_components=ncomp, whiten=False,svd_solver='randomized')
-    features= pca.fit_transform(data)
-    
-    N= 100
-    bandwidth = estimate_bandwidth(features, quantile=0.2)
-    if bandwidth <= 1e-3:
-        bandwidth = 0.1
-    
-    params = {'bandwidth': np.linspace(np.min(features), np.max(features),20)}
-    grid = GridSearchCV(KernelDensity(algorithm = "ball_tree",breadth_first = False), params,verbose=0)
-    
-    ## perform MeanShift clustering.
-    ms = MeanShift(bandwidth=bandwidth, bin_seeding=True, cluster_all=False, min_bin_freq=20)
-    ms.fit(features)
-    labels1 = ms.labels_
-    label_select = {y:[x for x in range(len(labels1)) if labels1[x] == y] for y in sorted(list(set(labels1)))}
-    
-    ## Extract the KDE of each cluster identified by MS.
-    Proxy_data= []
-    
-    for lab in label_select.keys():
-        if len(label_select[lab]) < 3:
-            continue
-        Quanted_set= features[label_select[lab],:]
-        
-        grid.fit(Quanted_set)
-        
-        kde = grid.best_estimator_
-        Extract= kde.sample(N)
-        Return= pca.inverse_transform(Extract)
-        Proxy_data.extend(Return)
-    
-    Proxy_data= np.array(Proxy_data)
-    
-    pca = PCA(n_components=ncomp, whiten=False,svd_solver='randomized').fit(Proxy_data)
-    New_features= pca.transform(data)
-    
-    return New_features
-
-
 
    
 #### Fam
@@ -234,9 +181,15 @@ end= args.end + args.bornes
 ### These things define themselves
 
 
-Crossed = [x for x in Geneo.keys() if x not in Parents]
+Geneo_order= list(Geneo.keys())
+Whose_labs= np.repeat(Geneo_order,[len(Geneo[x]) for x in Geneo_order])
+    
+Whose = list(it.chain(*[Geneo[x] for x in Geneo_order]))
 
-Whose = list(it.chain(*Geneo.values()))
+ref_coords= {
+    z: [x for x in range(len(Whose)) if Whose_labs[x] == z] for z in refs_lib.keys()
+}
+
 SequenceStore = {fy:[] for fy in Whose}
 
 Likes = {x:[] for x in range(len(Parents))}
@@ -295,11 +248,11 @@ s1 = time.time()
 window_start = Index - Window + 1
 Seq = SequenceStore
 
-Aro = np.nan_to_num(np.array([Seq[x] for x in it.chain(*[Geneo[x] for x in Crossed])]))
+Sequences= [Seq[x] for x in Whose]
+Sequences= np.array(Sequences)
+Sequences= np.nan_to_num(Sequences)
 
-Daddy = np.nan_to_num(np.array([Seq[x] for x in it.chain(*[Geneo[x] for x in Parents])]))
-
-b = np.concatenate((Aro,Daddy),axis = 0)
+b = Sequences
 
 b= b[:,var_index]
 
@@ -309,7 +262,6 @@ data[:,:-1] = b
 pca = PCA(n_components=n_comp, whiten=False,svd_solver='randomized').fit(data)
 data = pca.transform(data)
 PC_var.append([x for x in pca.explained_variance_])
-data= local_sampling_correct(data)
 
 Accurate = []
 params = {'bandwidth': np.linspace(np.min(data), np.max(data),Bandwidth_split)}
@@ -321,19 +273,14 @@ grid = GridSearchCV(KernelDensity(algorithm = "ball_tree",breadth_first = False)
 #########################################
 
 for D in range(len(Parents)):
-    Where = [sum([len(Geneo[x]) for x in Parents[0:D]])+Aro.shape[0],sum([len(Geneo[x]) for x in Parents[0:(D+1)]])+Aro.shape[0]]
-    Where = [int(x) for x in Where]
-    Quanted_set = data[Where[0]:Where[1],:]
-    Below = []
+    
+    Quanted_set = data[ref_coords[Parents[D]],:]
+    
     ###################            ###################
     ## KDE estimation on filtered parental data set ##
     ###################            ###################
     
     Indexes = range(Quanted_set.shape[0])
-    
-    Indexes = [x for x in Indexes if x not in Below]
-    
-    Set_ref = np.vstack({tuple(row) for row in Quanted_set[Indexes,:]})
     
     grid.fit(Quanted_set[Indexes,:])
     kde = grid.best_estimator_
@@ -402,9 +349,9 @@ for h in range(len(maxim)):
 maxim[where_X] = N_pops
 
 
-Original_labels= np.repeat(Crossed + Parents,[len(Geneo[x]) for x in Crossed + Parents])
+Original_labels= Whose_labs
 
-Indexes= [y for y in it.chain(*[Geneo[x] for x in Crossed + Parents])]
+Indexes= [y for y in it.chain(*[Geneo[x] for x in Geneo_order])]
 Names= [Fam[y] for y in Indexes]
 
 ID= args.id
@@ -427,9 +374,7 @@ os.makedirs(os.path.dirname(filename), exist_ok=True)
 Output= open(filename,"w")
 
 Output.write("Vars" + "\t")
-for unit in range(L):
-    Output.write(str(unit + 1) + "\t")
-
+Output.write('\t'.join([str(unit + 1) for unit in range(L)]))
 Output.write('\n')
 
 for x in range(len(Whose)):

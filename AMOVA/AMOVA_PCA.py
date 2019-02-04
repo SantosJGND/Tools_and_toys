@@ -45,7 +45,7 @@ parser.add_argument("--bim",help = "snp information bim format.")
 
 parser.add_argument("--amova",action= 'store_true',help= 'perform AMOVA')
 
-parser.add_argument("--aims",type= str,default= '',help = ".gff file")
+parser.add_argument("--aims",type= str,default= '',help = "genetic window file file")
 
 parser.add_argument("--supervised",action= 'store_true',help= 'use ref groups for supervised analysis.')
 
@@ -59,7 +59,7 @@ parser.add_argument("--clsize",type = int,default = 15,help = "Minimum cluster s
 ###
 parser.add_argument("--out",type= str,default= '',help = "output directory")
 
-parser.add_argument("--id",type= str,default= 'StructE',help = "Give your analysis an ID. default is set to integer 2")
+parser.add_argument("--id",type= str,default= 'StructE',help = "Give your analysis an ID.")
 ### 
 parser.add_argument("--dr",default = 'PCA',help = "Dimensionality reduction. options: PCA, NMF")
 ### 
@@ -67,7 +67,7 @@ parser.add_argument("--ncomp",type = int,default = 4,help = "Number of component
 ### 
 parser.add_argument("--random",action='store_true',help= 'random regions')
 
-parser.add_argument("--randN",type= int,help= 'Number of random regions.')
+parser.add_argument("--randN",type= int,default= 100,help= 'Number of random regions.')
 ###
 parser.add_argument("-w",type = int,default = 150, help = "random region size")
 
@@ -136,8 +136,10 @@ if args.random:
     Genes = Ste.Gen_rand(MissG,Books.Chr,args.randN,args.w)
     print('random analysis selected. {} regions of size {} generated.'.format(args.randN,args.w))
 else:
+    if args.aims == '':
+        print('--random nor --Aims provided.')
     ## /gs7k1/home/jgarcia/miRNA/MirBase_clean.txt
-    Genes = Ste.read_selected(args.Aims,args.mrg)
+    Genes = Ste.read_selected(args.aims,mrg= args.mrg)
 
 ## remove regions with no SNPs
 Genes = {x:Genes[x] for x in Genes.keys() if len(Genes[x]) > 0}
@@ -182,7 +184,11 @@ for CHR in SequenceStore.keys():
         
         ### PCA and MeanShift of information from each window copied from *FM36_Galaxy.py.
         Sequences= [SequenceStore[CHR][c][x] for x in Whose]
-        Sequences= np.array(Sequences) 
+        Sequences= np.array(Sequences)
+        
+        if Sequences.shape[1] <= 3:
+            Results[CHR][c] = [0,0]
+            continue
         
         Sequences= np.nan_to_num(Sequences)
         
@@ -243,10 +249,9 @@ for CHR in SequenceStore.keys():
             labels= Sup_labels
             Who= [z for z in it.chain(*[refs_lib[x] for x in ref_order])]
             Ngps= len(refs_lib)
-            
+        
         else:
-            #### Dimensionality reduction
-
+            
             Who = [x for x in range(len(labels)) if labels[x] != -1 and labels[x] in Keep]
             labels = [labels[x] for x in Who]
             Who= [Focus_labels[x] for x in Who]
@@ -257,7 +262,7 @@ for CHR in SequenceStore.keys():
         
         if args.amova:
             AMOVA,Cig = AMOVA_FM42(data[Who,:],labels,n_boot=0,metric= 'euclidean')
-            
+            print('couting: {}, Ngps: {}'.format(AMOVA,Ngps))
             Results[CHR][c] = [AMOVA,Ngps]
 
 print("MS PCA.")
@@ -324,8 +329,9 @@ if args.amova:
         for bl in Results[CHR].keys():
             line= [CHR,bl,Genes[CHR][bl][0],Genes[CHR][bl][1]]
             line.extend(Results[CHR][bl])
+            print(line)
             
-            Ouptut.write('\t'.join(line))
+            Output.write('\t'.join([str(x) for x in line]))
             Output.write('\n')
 
     Output.close()
