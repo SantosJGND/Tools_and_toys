@@ -46,8 +46,6 @@ parser.add_argument("--clustmethod",default = "MeanShift",choices = ["MeanShift"
 ###
 parser.add_argument("--het",type = float,default = 5e-2, help = "Heterozygosity filter")
 ### 
-parser.add_argument("--dr",default = 'NMF',help = "Dimensionality reduction. options: PCA, NMF")
-### 
 parser.add_argument("--ncomp",type = int,default = 4,help = "Number of components kept in case of PCA reduction")
 ### 
 parser.add_argument("--outmethod",default = "None",help = "Outlier filter of population refs method. options: DBSCAN, NMF, Perc, Z, Isolation_forest.")
@@ -134,9 +132,7 @@ Filter_Het = args.het
 
 
 ## Dimensionality reduction: PCA, NMF
-DIMr = args.dr
 n_comp = args.ncomp
-PC_var_lim = .01
 ##
 ## savgol filter parameter
 BIN = args.bin
@@ -144,11 +140,6 @@ BIN = args.bin
 ## Chose clustering method
 Method = args.clustmethod
 
-## Outlier filter method: DBSCAN, NMF, Perc, Z, Isolation_forest.
-Outlier_method = args.outmethod
-
-
-quantile_filter_1 = 20 ### quantile filter for Percentile based outlier.
 
 ## KDE estimation tool
 ## Attention: sklearn uses GridsearchCV. While this implies more parameters, it 
@@ -158,17 +149,7 @@ quantile_filter_1 = 20 ### quantile filter for Percentile based outlier.
 ## and ensure it to never come to 0.
 ## sklearn, scipy
 
-KDE_tool = 'sklearn'
 Bandwidth_split = 30
-
-### Output normalization: CDF, Max
-normalize = 'CDF'
-
-### Resampling size for CDF estimates.
-KDE_samples = 1000
-
-# Controlling for global likelihood.
-Control = False
 
 start= args.start - args.bornes
 

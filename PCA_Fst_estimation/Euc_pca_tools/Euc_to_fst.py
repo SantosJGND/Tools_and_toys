@@ -1,25 +1,27 @@
 import numpy as np
 import collections
-import StructE_tools as Ste
+import Euc_pca_tools.StructE_tools as Ste
 from scipy.stats import beta
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import pairwise_distances
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import scale
 
+from IPython.display import clear_output
+
 def recursively_default_dict():
         return collections.defaultdict(recursively_default_dict)
 
-
+import plotly.graph_objs as go
+from plotly.offline import iplot
 
 ### Converting distances to fst's.
-
-def Euc_to_fst(vector_lib,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eigen= False, Scale= False,Centre= True):
+def Euc_to_fst(vector_lib,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eigen= False, Scale= False,Centre= True,ploidy= 1):
     ### Select pre and post processing measures. 
-    
-    length_haps= vector_lib.shape[1]
         
-    print('length haps: {}, N iterations: {}, range pops: {}'.format(length_haps,Iter,pop_max))
+    length_haps= vector_lib.shape[1]
+    
+    Iter= 20 # repeats
     
     #### Predict
     predicted= []
@@ -40,6 +42,7 @@ def Euc_to_fst(vector_lib,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eig
     ### proceed.
 
     for rep in range(Iter):
+        clear_output()
         
         N_pops= np.random.choice(range(3,pop_max),1,replace= False)[0]
         
@@ -56,7 +59,7 @@ def Euc_to_fst(vector_lib,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eig
         iu_control= np.triu_indices(2,1)
 
         Pops= np.random.choice(vector_lib.shape[0],N_pops,replace= False)
-        #print('Iter: {}, vectors selected: {}, hap length: {}'.format(rep,Pops,length_haps))
+        print('Iter: {}, vectors selected: {}, hap length: {}'.format(rep,Pops,length_haps))
         ########## FST
 
         freqs_selected= vector_lib[Pops,:length_haps]
@@ -78,7 +81,7 @@ def Euc_to_fst(vector_lib,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eig
             probs= vector_lib[Pops[k],:]
 
             m= bias_scheme[k]
-            Haps= [[np.random.choice([1,0],p= [1-probs[x],probs[x]]) for x in range(length_haps)] for acc in range(m)]
+            Haps= [[np.random.choice([ploidy,0],p= [1-probs[x],probs[x]]) for x in range(length_haps)] for acc in range(m)]
 
             data.extend(Haps)
 
@@ -114,12 +117,10 @@ def Euc_to_fst(vector_lib,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eig
     fst_x= [np.log(fst_store[x]) for x in Lindexes]
     m_coeff,b= np.polyfit(y_true,fst_x,1)
     
-    return m_coeff, b, fst_x, y_true
+    return m_coeff, b, biased_pairwise, fst_x, y_true
 
 
-
-
-def Fst_predict(vector_lib,m_coeff,b,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eigen= False, Scale= False,Centre= True):
+def Fst_predict(vector_lib,m_coeff,b,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [20,300],Eigen= False, Scale= False,Centre= True,ploidy= 1):
     ### Select pre and post processing measures. 
     
     length_haps= vector_lib.shape[1]
@@ -183,7 +184,7 @@ def Fst_predict(vector_lib,m_coeff,b,n_comp= 5,pop_max= 8,Iter= 20,bias_range= [
             probs= vector_lib[Pops[k],:]
 
             m= bias_scheme[k]
-            Haps= [[np.random.choice([1,0],p= [1-probs[x],probs[x]]) for x in range(length_haps)] for acc in range(m)]
+            Haps= [[np.random.choice([ploidy,0],p= [1-probs[x],probs[x]]) for x in range(length_haps)] for acc in range(m)]
 
             data.extend(Haps)
 

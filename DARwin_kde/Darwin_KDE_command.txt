@@ -11,17 +11,16 @@ qsub -N Jtrop_ind3 -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
 --end 4800000 \
 --bornes 1000
 
-
-qsub -N Jtrop_ind2 -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+qsub -N Jtrop_ind2 -V -q normal.q -l mem_free=10G -b y python -u Darwin_KDE.py \
 --CHR 11 \
 --geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
 --fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
 --bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
 --ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
 --dr PCA \
---id Jtrop_ind2_chrom11 \
---start 5900000 \
---end 6500000 \
+--id Jtrop_ind2short_chrom11 \
+--start 6100000 \
+--end 6300000 \
 --bornes 1000
 
 
@@ -76,3 +75,19 @@ qsub -N Jtrop_ind -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_KDE.py \
 --end 26000000 \
 --bornes 1000
 
+######
+###### Test coordinates
+######
+
+qsub -N coord_testI -V -q normal.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 1 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr01.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--admx /gs7k1/home/jgarcia/PO_Core/admx_CORE.txt \
+--dr PCA \
+--id coord_testI \
+--start 2064986 \
+--end 2067417 \
+--bornes 0

@@ -470,7 +470,7 @@ def chromosome_collections(df, y_positions, height,  **kwargs):
         del df['width']
 
 
-def return_ideogram(ideo, chromosome_list,ID,out= True):
+def return_ideogram(ideo, chromosome_list,ID,out= True,height=30,width= 10):
     # Height of each ideogram
     chrom_height = 1
 
@@ -537,7 +537,7 @@ def return_ideogram(ideo, chromosome_list,ID,out= True):
     ideo['width'] = ideo.end - ideo.start
 
     # Width, height (in inches)
-    figsize = (10, 30)
+    figsize = (width, height)
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111)
