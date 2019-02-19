@@ -1,6 +1,3 @@
-![logo](GH_logo.png)
-
-
 # Tools for Genetic and Genomic analysis
 
 **Disclaimer**: Analyses and algorithms presented below deal with high quality haploid or phased data.
@@ -35,15 +32,21 @@ information in novel data sets.
 
 >plink and .geno format (combined). 
 
->[README.md](/DARwin_kde)
+>[README](/DARwin_kde)
 
 - **PCA and Fst** - *calculate Fst from euclidean distances in PCA space. Use for prediction*
-
+ 
 >link to tutorial: [PCA and Fst](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/PCA_Fst_estimation/Euclidian_to_fst.ipynb)
+
+>DataMatrix to Fst: [Notebook tool](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/PCA_Fst_estimation/DataMatrix_Fst.ipynb)
 
 - **AMOVA calculation** - *calculate among group variance using different metrics*
 
 >link to tutorial: [AMOVA_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/AMOVA/AMOVA_tutorial.ipynb)
+
+>Working Example [notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/AMOVA/AMOVA_mRNA_supervised/AMOVA_output.ipynb)
+
+>command line [README](AMOVA/)
 
 
 ## Genomic Analysis
