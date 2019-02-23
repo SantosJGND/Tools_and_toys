@@ -360,7 +360,8 @@ def chromosome_collections(df, y_positions, height,  **kwargs):
         del df['width']
 
 
-def return_ideogram(ideo, chromosome_list,ID,out= True):
+
+def return_ideogram(ideo, chromosome_list,ID,out= True,height=30,width= 10):
     # Height of each ideogram
     chrom_height = 1
 
@@ -427,7 +428,7 @@ def return_ideogram(ideo, chromosome_list,ID,out= True):
     ideo['width'] = ideo.end - ideo.start
 
     # Width, height (in inches)
-    figsize = (10, 30)
+    figsize = (width, height)
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111)
@@ -452,25 +453,35 @@ def return_ideogram(ideo, chromosome_list,ID,out= True):
     return fig
 
 
-def KDE_windows(Windows,label_vector,ref_labels,Out,colors= 'standard',alt_col= [],Comparison_threshold= 4,Outlier_threshold= 1e-3):
+def KDE_windows(Windows,label_vector,ref_labels,Out,colors= 'standard',alt_col= [],n_comps= 5,Comparison_threshold= 4,Outlier_threshold= 1e-3,return_var= True):
 
     target_indx= {z:[x for x in range(len(label_vector)) if label_vector[x] == z] for z in ref_labels}
 
     Windows_profiles= recursively_default_dict()
-
-    pca2 = PCA(n_components=3, whiten=False,svd_solver='randomized')
+    
+    var_comp_store= []
+    
+    pca2 = PCA(n_components=n_comps, whiten=False,svd_solver='randomized')
 
     for bl in Windows[1].keys():
 
         data= Windows[1][bl]
         data= pca2.fit_transform(data)
-
+        
+        local_pcvar= list(pca2.explained_variance_ratio_)
+        
+        local_pcvar= [bl,*local_pcvar]
+        
+        var_comp_store.append(local_pcvar)
+        
         profiles= extract_profiles(data,target_indx)
 
         ### store stuff.
         Windows_profiles[1][bl]= profiles
-
-
+    
+    
+    var_comp_store= np.array(var_comp_store)
+    var_comp_store= pd.DataFrame(var_comp_store,columns=['set',*['PC' + str(x + 1) for x in range(n_comps)]])
 
     focus_indexes= [x for x in range(len(label_vector))]
     if colors== 'standard':
@@ -503,5 +514,9 @@ def KDE_windows(Windows,label_vector,ref_labels,Out,colors= 'standard',alt_col= 
     ideo_kde = compress_ideo(ideo_kde,chromosome_list,Out)
 
     ID= 'kde' 
-
-    return_ideogram(ideo_kde,chromosome_list,ID)
+    
+    if return_var:
+        return ideo_kde,chromosome_list, ID, var_comp_store
+    else:
+        return ideo_kde,chromosome_list, ID
+        

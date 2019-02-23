@@ -12,7 +12,7 @@ def recursively_default_dict():
         return collections.defaultdict(recursively_default_dict)
 
 
-import StructE_tools as Ste
+import synth_tools.StructE_tools as Ste
 
 
 ###

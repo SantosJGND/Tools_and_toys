@@ -5,7 +5,7 @@ from plotly.offline import iplot
 
 def Struct_subplots_lib(Struct_lib,vector_lib,Npops= 4,Ncols= 2,range_diff= [0,10],func= 'prior_func',kwargs= 'prior_kwargs',xaxis= '',yaxis= '',title= ''):
     
-    from Generate_samples import Check_Path
+    from synth_tools.Generate_samples import Check_Path
     
     Ncols= 2
     titles= list(Struct_lib.keys())
@@ -48,7 +48,7 @@ def Struct_subplots_lib(Struct_lib,vector_lib,Npops= 4,Ncols= 2,range_diff= [0,1
 def Rec_subplots_lib(Cop_lib,vector_lib,Npops= 4,Ncols= 2,range_diff= [0,10],steps= 100,func= 'cop_func',kwargs= 'cop_kwargs',xaxis= '',yaxis= '',title= ''):
     
     from plotly import tools
-    from Recombination_tools import Check_cop
+    from synth_tools.Recombination_tools import Check_cop
 
     titles= list(Cop_lib.keys())
     print(titles)
