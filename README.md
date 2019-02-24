@@ -48,13 +48,18 @@ information in novel data sets.
 
 >command line [README](AMOVA/)
 
+- **Cluster allele frequencies** - use mean shift to control for admixture in calculating local allele frequencies.
+
+>example application - simulation: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
+
+> [README](/Cluster_shape)
+
 
 ## Genomic Analysis
 
 - **Simulating Genomes: direct manipulation of known-truth** - *control pairwise Fst across data sets, allow for recombination and admixture*
 
 >link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
-
 
 - **MeanShift for structure analysis** - *use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.*
 

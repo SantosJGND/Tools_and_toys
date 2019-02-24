@@ -1,0 +1,16 @@
+
+qsub -N Freqs_single -V -q normal.q -l mem_free=30G -b y python -u cluster_frequencies.py \
+/gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--ref /gs7k1/home/jgarcia/PO_Core/refs_CORE.txt \
+--admx /gs7k1/home/jgarcia/PO_Core/admx_CORE.txt \
+--amova \
+--supervised \
+-w 150 \
+--dr PCA \
+--random \
+-w 150 \
+--randN 200 \
+--id CLfreq_one \
+--out CLfreq_one
