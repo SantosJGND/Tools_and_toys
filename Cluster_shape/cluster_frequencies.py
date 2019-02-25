@@ -261,12 +261,28 @@ for CHR in SequenceStore.keys():
             labels= Sup_labels
             Who= [z for z in it.chain(*[refs_lib[x] for x in ref_order])]
             Ngps= len(refs_lib)
-        
-        else:
             
+            for hill in refs_lib.keys():
+                
+                if len(refs_lib[hill]) >= args.cl_freqs:
+                    cl_seqs= Sequences[refs_lib[hill],:]
+                    
+                    freq_vector= [float(x) / (cl_seqs.shape[0] * 2) for x in np.sum(cl_seqs,axis= 0)]
+                    
+                    Frequencies[CHR][c][hill]= freq_vector
+        else:
             Who = [x for x in range(len(labels)) if labels[x] != -1 and labels[x] in Keep]
             labels = [labels[x] for x in Who]
             Who= [Focus_labels[x] for x in Who]
+            for hill in SpaceX.keys():
+                
+                if len(Tree[hill]) >= args.cl_freqs:
+                    cl_seqs= Sequences[Tree[hill],:]
+                    
+                    
+                    freq_vector= [float(x) / (cl_seqs.shape[0] * 2) for x in np.sum(cl_seqs,axis= 0)]
+                    
+                    Frequencies[CHR][c][hill]= freq_vector
         
         if len(list(set(labels))) == 1:
             Results[CHR][c]= [0,1]

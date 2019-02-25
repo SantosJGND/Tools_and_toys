@@ -321,7 +321,7 @@ def MAC_process(Construct,Out,Cl_store,refs_lib,Fam,Names= [],target_var= [],Dr_
 
 
 
-def KDE_pca(gp,feats= [],Cameo= [],label_vector= [],Subset= [],height= 2000,width= 1000):
+def KDE_pca(feats= [],Cameo= [],label_vector= [],Subset= [],height= 2000,width= 1000):
     
     Ncols= 2
     titles=['Global']
