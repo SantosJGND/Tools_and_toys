@@ -321,7 +321,7 @@ def MAC_process(Construct,Out,Cl_store,refs_lib,Fam,Names= [],target_var= [],Dr_
 
 
 
-def KDE_pca(gp,feats= [],Cameo= [],label_vector= [],Subset= []):
+def KDE_pca(gp,feats= [],Cameo= [],label_vector= [],Subset= [],height= 2000,width= 1000):
     
     Ncols= 2
     titles=['Global']
@@ -383,7 +383,7 @@ def KDE_pca(gp,feats= [],Cameo= [],label_vector= [],Subset= []):
         fig_pca_subplots['layout']['yaxis' + str(n_plot + 1)].update(title='PC{}'.format(pos2+1))
         fig_pca_subplots['layout']['xaxis' + str(n_plot + 1)].update(title='PC1')
     
-    fig_pca_subplots['layout'].update(height= 1600,width= 1000)
+    fig_pca_subplots['layout'].update(height= height,width= width)
     
     #fig= go.Figure(data=fig_pca_subplots, layout=layout)
     iplot(fig_pca_subplots)
