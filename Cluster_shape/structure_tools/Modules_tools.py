@@ -195,9 +195,9 @@ def local_sampling_correct(data_now,n_comp):
 #### Function to calculate overlap given coordinates matrix and dictionary of indicies.
 def extract_profiles_union(global_data,target_ind_dict,threshold,P):
     ## estimate the bandwith
-    params = {'bandwidth': np.linspace(np.min(global_data), np.max(global_data),20)}
+    params = {'bandwidth': np.linspace(np.min(global_data), np.max(global_data),5)}
     grid = GridSearchCV(KernelDensity(algorithm = "ball_tree",breadth_first = False), params,verbose=0)
-
+    
     ## perform MeanShift clustering.
     combine= {}
     for bull in target_ind_dict.keys():
@@ -215,8 +215,8 @@ def extract_profiles_union(global_data,target_ind_dict,threshold,P):
         Quanted_set= global_data[All_coords,:]
 
         i_coords, j_coords, z_coords = np.meshgrid(np.linspace(min(Quanted_set[:,0]),max(Quanted_set[:,0]),P),
-                              np.linspace(min(Quanted_set[:,1]),max(Quanted_set[:,1]),P),
-                                np.linspace(min(Quanted_set[:,2]),max(Quanted_set[:,2]),P), indexing= 'ij')
+                                np.linspace(min(Quanted_set[:,1]),max(Quanted_set[:,1]),P),
+                              np.linspace(min(Quanted_set[:,1]),max(Quanted_set[:,1]),P), indexing= 'ij')
 
 
         traces= [x for x in it.product(range(P),range(P),range(P))]
@@ -241,16 +241,16 @@ def extract_profiles_union(global_data,target_ind_dict,threshold,P):
 
         
         pop1_and_2= len([x for x in range(background.shape[0]) if pop1_fist[x] == 1 and pop2_fist[x] == 1])
-        pop1_I_pop2= pop1_and_2 / float(sum(pop1_fist))
-        pop2_I_pop1= pop1_and_2 / float(sum(pop2_fist))
+        #pop1_I_pop2= pop1_and_2 / float(sum(pop1_fist))
+        #pop2_I_pop1= pop1_and_2 / float(sum(pop2_fist))
         
         total_overlap= pop1_and_2 / float(sum(pop1_fist) + sum(pop2_fist) - pop1_and_2)
         
-        empty_space= 1 - (sum(pop1_fist) + sum(pop2_fist) - pop1_and_2) / background.shape[0]
+        #empty_space= 1 - (sum(pop1_fist) + sum(pop2_fist) - pop1_and_2) / background.shape[0]
         
-        Stats[combo][pop1]= pop1_I_pop2
-        Stats[combo][pop2]= pop2_I_pop1
-        Stats[combo]['empty']= empty_space
+        #Stats[combo][pop1]= pop1_I_pop2
+        #Stats[combo][pop2]= pop2_I_pop1
+        #Stats[combo]['empty']= empty_space
         Stats[combo]['PU']= total_overlap
         
     

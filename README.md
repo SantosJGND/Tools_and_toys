@@ -50,10 +50,13 @@ information in novel data sets.
 
 - **Cluster allele frequencies** - use mean shift to control for admixture in calculating local allele frequencies.
 
->Cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/cluster_freqs.ipynb)
+>cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/cluster_freqs.ipynb)
 
+>euclidean diststances using observed freq. vectors: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Euclidian_to_fst.ipynb)
 
->example application - simulation: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
+>example application - simulation and kde study: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
+
+>input adaptation: [structure simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Structure_simulator.ipynb)
 
 > [README](/Cluster_shape)
 

@@ -11,7 +11,7 @@ def recursively_default_dict():
         return collections.defaultdict(recursively_default_dict)
 
 
-import StructE_tools as Ste
+import structure_tools.StructE_tools as Ste
 
 
 ###
@@ -139,6 +139,124 @@ def Gen_samples(Pops,Sizes,vector_lib,prior_func,prior_kwargs,return_pca= False,
     return Windows, Fst_windows
 
 
+def Gen_samples_Rfreqs(Pops,Sizes,vector_lib,Fsts_test,label_package,Origins,prior_func,prior_kwargs,Cop_choice,window_size= 5000,Chr= 1,return_pca= False,n_comp= 100,range_diff= [0,100],steps= 100):
+    
+    labels= label_package['labels']
+    Whose= label_package['Whose']
+    ind_to_group= label_package['ind_to_group']
+    
+    print('...')
+    color_ref= ['red','yellow','blue','black','orange','purple','green','silver','red3','deepskyeblue','navy','chartreuse','darkorchid3','goldenrod2']
+        
+    Npops= len(Sizes)
+    pca = PCA(n_components=n_comp, whiten=False,svd_solver='randomized').fit(vector_lib)
+    features = pca.transform(vector_lib)
+    
+    Windows= recursively_default_dict()
+    Blocks_truth= recursively_default_dict()
+    Out= {Chr:{}}
+    
+    threshold= .005
+    P= 30
+
+    Fst_labels= []
+
+    Fst_crawl= []
+
+    Fst_windows= recursively_default_dict()
+    
+    Ideo= []
+    current= recursively_default_dict()
+    
+    if len(Sizes) > Npops:
+        print('Size vector longer than N pops. using first {}.'.format(Npops))
+        Sizes= Sizes[:Npops]
+
+    for angle in np.arange(range_diff[0],range_diff[1]):
+        
+        bl= int(angle*window_size)
+        end= int(bl+ window_size - 1)
+        Out[1][bl]= end
+        
+        Cop_local= {}
+        
+        Blocks[Chr][bl]=[]
+        
+        for gp in Cop_choice.keys():
+            cop_func= Cop_choice[gp]['cop_func']
+            
+            cop, ID= cop_func(angle,range_diff,**Cop_choice[gp]['cop_kwargs'])
+            Cop_local[gp]= cop
+        
+        new_freqs= prior_func(vector_lib,Fsts_test,angle,range_diff,**prior_kwargs)
+        
+        N_pops= len(Sizes)
+        
+        data= []
+
+        for acc in range(len(Whose)):
+            Subject = 'sample' + str(acc)
+            
+            transition_p= Origins[ind_to_group[acc][0]][ind_to_group[acc][1]]
+            COp= Cop_local[ind_to_group[acc][0]]
+            
+            if acc in current.keys():
+                cross_over= np.random.choice([0,1], p=[1-COp,COp])
+                if cross_over == 1:
+                    k= np.random.choice(labels, p=transition_p)
+                    current[acc]= k
+                else:
+                    k= current[acc]
+            else:
+                
+                k= np.random.choice(labels, p=transition_p) #ind_to_group[acc][0]
+                current[acc]= k
+            
+            Blocks_truth[Chr][bl].append(k+1)
+            
+            probs= new_freqs[k,:]
+
+            probs[(probs > 1)]= 1
+            probs[(probs < 0)]= 0
+
+            Haps= [np.random.choice([1,0],p= [1-probs[x],probs[x]]) for x in range(vector_lib.shape[1])]
+
+            Stock = ['Region_chr'+str(Chr)+ '_' + Subject,bl,end,color_ref[k]]
+            Ideo.append(Stock)
+            data.append(Haps)
+
+        data= np.array(data)
+        
+        if return_pca:
+                pca2 = PCA(n_components=n_comp, whiten=False,svd_solver='randomized')
+
+                data= pca2.fit_transform(data)
+
+        Windows[int(angle)]= data
+
+        ##### FSTs
+        Pairwise= Ste.return_fsts2(new_freqs)
+        Pairwise['angle']= [angle] * Pairwise.shape[0]
+        Fst_labels.extend(Pairwise.pops)
+
+        Fst_crawl.extend(Pairwise.fst)
+
+
+
+        Fst_windows[int(angle)]= Pairwise
+
+        ### store stuff.
+        Windows[int(angle)]= data
+    
+    
+    Windows= {Chr:Windows}
+    Fst_windows= {1:Fst_windows}
+    print('Done.')
+    
+    return Windows, Fst_windows, Ideo, Out, Blocks_truth
+
+
+
 def Gen_samples_II(Pops,Sizes,vector_lib,label_package,Origins,prior_func,prior_kwargs,Cop_choice,window_size= 5000,Chr= 1,return_pca= False,n_comp= 100,range_diff= [0,100],steps= 100):
     
     labels= label_package['labels']
@@ -260,7 +378,31 @@ def Gen_samples_II(Pops,Sizes,vector_lib,label_package,Origins,prior_func,prior_
     return Windows, Fst_windows, Ideo, Out
 
 
-def Check_Path(Npops,vector_lib,prior_func,prior_kwargs,Pops= [], random= True,n_comp= 100,range_diff= [0,100],steps= 100):
+#######
+#######
+
+def fst_select(fst_test,fst,range_allow= 0.01):
+    
+    diff_dict= {
+        x: abs(fst - fst_test.fst[x]) for x in range(fst_test.shape[0])
+    }
+    
+    present= [x for x in diff_dict.keys() if diff_dict[x] <= range_allow]
+    
+    if present:
+        provide= np.random.choice(present,1)[0]
+        return fst_test.pops[provide]
+    
+    else:
+        suspicious= sorted(diff_dict,key= diff_dict.get)
+        
+        return fst_test.pops[suspicious[0]]
+
+
+#######
+#######
+
+def Check_Path_Rfreqs(Npops,vector_lib,Fsts_test,prior_func,prior_kwargs,Pops= [], random= True,n_comp= 100,range_diff= [0,100],steps= 100):
     
     pca = PCA(n_components=100, whiten=False,svd_solver='randomized').fit(vector_lib)
     features = pca.transform(vector_lib)# * pca.explained_variance_ratio_
@@ -281,13 +423,7 @@ def Check_Path(Npops,vector_lib,prior_func,prior_kwargs,Pops= [], random= True,n
     
     for angle in np.arange(range_diff[0],range_diff[1]):
         
-        coords= features[Pops,:]
-        
-        coords, prior= prior_func(coords,angle,range_diff,passport= True,**prior_kwargs)
-        
-        new_freqs= pca.inverse_transform(coords)
-        new_freqs[new_freqs > 1] = 1
-        new_freqs[new_freqs < 0] = 0
+        new_freqs, prior= prior_func(vector_lib,Fsts_test,angle,range_diff,passport= True,**prior_kwargs)
         
         Pairwise= Ste.return_fsts2(new_freqs)
         Pairwise['angle']= [angle] * Pairwise.shape[0]
