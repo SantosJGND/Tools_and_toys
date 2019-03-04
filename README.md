@@ -48,6 +48,17 @@ information in novel data sets.
 
 >command line [README](AMOVA/)
 
+
+## Genomic Analysis
+
+- **Simulating Genomes: direct manipulation of known-truth** - *control pairwise Fst across data sets, allow for recombination and admixture*
+
+>link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
+
+- **MeanShift for structure analysis** - *use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.*
+
+>link to tutorial: [MStarget_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/MS_target/MStarget_tutorial.ipynb)
+
 - **Cluster allele frequencies** - use mean shift to control for admixture in calculating local allele frequencies.
 
 >cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/cluster_freqs.ipynb)
@@ -60,13 +71,8 @@ information in novel data sets.
 
 > [README](/Cluster_shape)
 
+- **From vcf** - analysis of global and local variation, supervised assignment, use for simulation.
 
-## Genomic Analysis
+>PCA, global and window based. Supervised classification: [vcf_analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Simu_03-03-2019/vcf_analysis.ipynb)
 
-- **Simulating Genomes: direct manipulation of known-truth** - *control pairwise Fst across data sets, allow for recombination and admixture*
-
->link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
-
-- **MeanShift for structure analysis** - *use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.*
-
->link to tutorial: [MStarget_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/MS_target/MStarget_tutorial.ipynb)
+>Frequency feed: [simulation basic](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Simu_03-03-2019/custom_manipulation.ipynb)

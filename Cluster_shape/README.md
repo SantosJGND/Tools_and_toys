@@ -19,3 +19,5 @@ By calculating allele frequencies of local clusters, we ensure that the estimate
 are free from admixture. 
 
 >example application - simulation: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
+
+>from .vcf - simulation: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Simu_03-03-2019/custom_manipulation.ipynb)
