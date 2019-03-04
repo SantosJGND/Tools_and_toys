@@ -168,12 +168,7 @@ def plot_global_pca(feats,label_select,PCA_color_ref,title= '',height= 500,width
 
 def window_sample_plot(Windows,label_select,PCA_color_ref,plot_who= [],shade= [],Chr= 1,windows_pick= 4,height= 1500,width= 1000):
 
-    windows_pick= 4
-    Chr= 1
     Ncols= 2
-    height= 1500
-    width= 1000
-    
     opac= [.8] * len(label_select)
     
     if shade:
@@ -225,10 +220,15 @@ def window_sample_plot(Windows,label_select,PCA_color_ref,plot_who= [],shade= []
     iplot(fig_pca_subplots)
 
 
-def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,plot_choice= 'coords'):
+def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_windows= [],plot_choice= 'coords'):
 
+    x_range= range(len(pc_density))
+    
+    if range_windows:
+        x_range= range(range_windows[0],range_windows[1])
+        
     if plot_choice == 'density':
-        x_coords= [z for z in it.chain(*[[x] * 100 for x in range(len(pc_density))])]
+        x_coords= [z for z in it.chain(*[[x] * 100 for x in x_range])]
         y_coords= [z for z in it.chain(*[list(np.linspace(-8,8,100)) for x in range(len(pc_density))])]
         z_coords= [z for z in it.chain(*pc_density)]
 
@@ -259,7 +259,7 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,plot_ch
         fig= go.Figure(data=fig_data, layout=layout)
 
     if plot_choice== 'coords':
-        x_coords= [z for z in it.chain(*[[x] * len(kde_class_labels) for x in range(len(pc_coords))])]
+        x_coords= [z for z in it.chain(*[[x] * len(kde_class_labels) for x in x_range])]
         z_coords= [z for z in it.chain(*pc_coords)]
 
         class_colors= [z for z in it.chain(*[kde_class_labels for x in range(len(pc_coords))])]
@@ -286,6 +286,40 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,plot_ch
         )
 
         fig= go.Figure(data=fig_data, layout=layout)
+
+    iplot(fig)
+
+
+
+def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= [0,.3]):
+    
+    tuples= list(it.combinations(ref_labels,2))
+    x_range= list(range(len(freq_matrix)))
+    
+    if sort:
+        freq_matrix= sorted(freq_matrix)
+        
+    if window_range:
+        x_range= list(range(window_range[0],window_range[1]))
+    
+    freq_matrix= np.array(freq_matrix)
+        
+    fig_fst= [go.Scatter(
+        x= x_range,
+        y= freq_matrix[:,i],
+        name= str(tuples[i])
+    ) for i in range(freq_matrix.shape[1])]
+    
+    layout = go.Layout(
+        title= 'ref Fst,sorted= {}'.format(sort),
+        yaxis=dict(
+            title='Fst',
+            range= [0,.3]),
+        xaxis=dict(
+            title= ''.format(['extraction order','sorted'][int(sort)]))
+    )
+
+    fig= go.Figure(data=fig_fst, layout=layout)
 
     iplot(fig)
 

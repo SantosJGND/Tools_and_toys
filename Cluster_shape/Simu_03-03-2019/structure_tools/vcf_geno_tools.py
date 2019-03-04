@@ -154,6 +154,58 @@ def geno_window_split(genotype,summary,Steps= 25,window_size=100):
     return Windows, Out
 
 
+def window_fst_sup(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,range_sample= [],rand_sample= 0):
+    
+    kde_class_labels= labels1
+    kde_label_dict= {
+        z:[x for x in range(len(kde_class_labels)) if kde_class_labels[x] == z] for z in list(set(kde_class_labels))
+    }
+    
+    if rand_sample:
+        sample= rand_sample
+        sample_range= [0,sample]
+        Freq_extract= {
+            Chr:{
+                bl:Windows[Chr][bl] for bl in np.random.choice(list(Windows[Chr].keys()),sample,replace= True)
+            }
+        }
+
+    if range_sample:
+        sample_range= range_sample
+        Freq_extract= {
+            Chr:{
+                bl:Windows[Chr][bl] for bl in list(sorted(Windows[Chr].keys()))[sample_range[0]:sample_range[1]]
+            }
+        }
+    
+    sim_fst= []
+    
+    for c in Freq_extract[Chr].keys():
+        Sequences= Windows[Chr][c]
+
+        if Sequences.shape[1] <= 3:
+            Results[Chr][c] = [0,0]
+            print('hi')
+            continue
+
+        Sequences= np.nan_to_num(Sequences)
+
+        pca = PCA(n_components=ncomp, whiten=False,svd_solver='randomized').fit(Sequences)
+        data = pca.transform(Sequences)
+        Ngps= len(ref_labels)
+        these_freqs= []
+        
+        for hill in ref_labels:
+            cl_seqs= Sequences[kde_label_dict[hill],:]
+
+            freq_vector= [float(x) / (cl_seqs.shape[0] * 2) for x in np.sum(cl_seqs,axis= 0)]
+            these_freqs.append(freq_vector)
+            
+        Pairwise= return_fsts2(np.array(these_freqs))
+        sim_fst.append(list(Pairwise.fst))
+        
+    return sim_fst
+
 
 def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,supervised= True,include_who= [],
                     range_sample= [130,600],rand_sample= 0,clsize= 15,cl_freqs= 5,Bandwidth_split= 20):
@@ -344,6 +396,7 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
         print(len(these_freqs))
         Pairwise= return_fsts2(np.array(these_freqs))
         sim_fst.extend(Pairwise.fst)
+        
 
 
         if len(list(set(labels))) == 1:
