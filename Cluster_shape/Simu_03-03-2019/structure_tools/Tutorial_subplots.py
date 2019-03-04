@@ -166,13 +166,19 @@ def plot_global_pca(feats,label_select,PCA_color_ref,title= '',height= 500,width
     iplot(fig_pca_subplots)
 
 
-def window_sample_plot(Windows,label_select,PCA_color_ref,Chr= 1,windows_pick= 4,height= 1500,width= 1000):
+def window_sample_plot(Windows,label_select,PCA_color_ref,plot_who= [],shade= [],Chr= 1,windows_pick= 4,height= 1500,width= 1000):
 
     windows_pick= 4
     Chr= 1
     Ncols= 2
     height= 1500
     width= 1000
+    
+    opac= [.8] * len(label_select)
+    
+    if shade:
+        for mit in shade:
+            opac[mit]= .2
 
     windows_pick= np.random.choice(list(Windows[1].keys()),windows_pick,replace= False)
     titles= ['window: ' + str(x) for x in windows_pick]
@@ -190,8 +196,12 @@ def window_sample_plot(Windows,label_select,PCA_color_ref,Chr= 1,windows_pick= 4
         for subp in range(2):
 
             coords= label_select
+            paint= list(coords.keys())
+            
+            if plot_who:
+                paint= plot_who
 
-            for i in coords.keys():
+            for i in paint:
                 trace= go.Scatter(
                 x = feats_local[coords[i],0],
                 y = feats_local[coords[i],subp + 1],
@@ -202,7 +212,7 @@ def window_sample_plot(Windows,label_select,PCA_color_ref,Chr= 1,windows_pick= 4
                 'line': {'width': 0},
                 'size': 6,
                 'symbol': 'circle',
-                "opacity": .8})
+                "opacity": opac[i]})
 
                 fig_pca_subplots.append_trace(trace, row + 1, subp + 1)
 
