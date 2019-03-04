@@ -121,3 +121,95 @@ def Admixture_subplots_lib(Geneo,Ncols= 2,xaxis= '',yaxis= '',title= ''):
 
     fig= go.Figure(data=fig_box_subplots, layout=layout)
     iplot(fig)
+
+
+def plot_global_pca(feats,PCA_color_ref,title= '',height= 500,width= 950):
+    ## perform MeanShift clustering.
+    bandwidth = estimate_bandwidth(feats, quantile=0.15)
+
+    ms = MeanShift(bandwidth=bandwidth, bin_seeding=False, cluster_all=True, min_bin_freq=15)
+    ms.fit(feats)
+    labels1 = ms.labels_
+    label_select = {y:[x for x in range(len(labels1)) if labels1[x] == y] for y in sorted(list(set(labels1)))}
+
+    ##
+
+    from plotly import tools
+
+    fig_pca_subplots = tools.make_subplots(rows=1, cols=2,subplot_titles=tuple([title]*2))
+
+    for subp in range(2):
+
+        n_plot= subp
+
+        coords= label_select
+
+        for i in coords.keys():
+            trace= go.Scatter(
+            x = feats[coords[i],0],
+            y = feats[coords[i],subp + 1],
+            mode= "markers",
+            name= str(i),
+            marker= {
+            'color': PCA_color_ref[i],
+            'line': {'width': 0},
+            'size': 6,
+            'symbol': 'circle',
+            "opacity": .8})
+
+            fig_pca_subplots.append_trace(trace, int(n_plot/float(2)) + 1, subp + 1)
+
+        fig_pca_subplots['layout']['yaxis' + str(n_plot + 1)].update(title='PC{}'.format(subp + 2))
+        fig_pca_subplots['layout']['xaxis' + str(n_plot + 1)].update(title='PC1')
+
+    fig_pca_subplots['layout'].update(height= height,width= width)
+
+    iplot(fig_pca_subplots)
+
+def window_sample_plot(Windows,PCA_color_ref,Chr= 1,windows_pick= 4,height= 1500,width= 1000):
+
+    windows_pick= 4
+    Chr= 1
+    Ncols= 2
+    height= 1500
+    width= 1000
+
+    windows_pick= np.random.choice(list(Windows[1].keys()),windows_pick,replace= False)
+    titles= ['window: ' + str(x) for x in windows_pick]
+    titles= np.repeat(titles,2)
+
+    fig_pca_subplots = tools.make_subplots(rows= int(len(titles) / float(Ncols)) + (len(titles) % Ncols > 0), cols=Ncols,
+                             subplot_titles=tuple(titles))
+
+    n_plot= 1
+    for row in range(len(windows_pick)):
+        pca_local= PCA(n_components=3, whiten=False,svd_solver='randomized')
+
+        feats_local= pca_local.fit_transform(Windows[1][windows_pick[row]])
+
+        for subp in range(2):
+
+            coords= label_select
+
+            for i in coords.keys():
+                trace= go.Scatter(
+                x = feats_local[coords[i],0],
+                y = feats_local[coords[i],subp + 1],
+                mode= "markers",
+                name= str(i),
+                marker= {
+                'color': PCA_color_ref[i],
+                'line': {'width': 0},
+                'size': 6,
+                'symbol': 'circle',
+                "opacity": .8})
+
+                fig_pca_subplots.append_trace(trace, row + 1, subp + 1)
+
+            fig_pca_subplots['layout']['yaxis' + str(n_plot)].update(title='PC{}'.format(subp + 2))
+            fig_pca_subplots['layout']['xaxis' + str(n_plot)].update(title='PC1')
+            n_plot += 1
+
+    fig_pca_subplots['layout'].update(height= height,width= width)
+
+    iplot(fig_pca_subplots)
