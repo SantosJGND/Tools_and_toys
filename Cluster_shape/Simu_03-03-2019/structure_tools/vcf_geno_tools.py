@@ -3,6 +3,7 @@ import numpy as np
 import itertools as it
 import collections
 import re
+import scipy
 
 from structure_tools.AMOVA_func import AMOVA_FM42, amova_cofactor
 
@@ -50,8 +51,7 @@ def simple_read_vcf(filename,row_info= 5,header_info= 9,phased= False):
             info_summ[line[0]] = ''.join(line[1:])
             d += 1
             continue
-
-
+        
         if d == (len(info_save)):
             line= ''.join(filter(lambda ch: ch not in "#", line))
             line= line.split()
@@ -246,8 +246,7 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
 
     Results = {
         'header': ['Chr','window'],
-        'info': [],
-        'coords': []
+        'info': []
     }
 
 
@@ -408,10 +407,9 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             clear_output()
             AMOVA,Cig = AMOVA_FM42(data[Who,:],labels,n_boot=0,metric= 'euclidean')
             print('counting: {}, Ngps: {}'.format(AMOVA,Ngps))
+            Results['info'].append([Chr,c,AMOVA,Ngps])
 
-            Results['coords'].append([Chr,c])
-            Results['info'].append([AMOVA,Ngps])
-
+    Results['info']= pd.DataFrame(np.array(Results['info']),columns= ['chrom','window','AMOVA','Ngps'])
     X_plot = np.linspace(0, .3, 1000)
 
     freq_kde = KernelDensity(kernel='gaussian', bandwidth=0.01).fit(np.array(sim_fst).reshape(-1,1))

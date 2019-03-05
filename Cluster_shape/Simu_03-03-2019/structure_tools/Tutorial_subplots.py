@@ -1,5 +1,6 @@
 from sklearn.decomposition import PCA
 from sklearn.cluster import MeanShift, estimate_bandwidth
+from sklearn.neighbors import KernelDensity
 
 import numpy as np
 import itertools as it
