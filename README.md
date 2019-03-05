@@ -63,7 +63,7 @@ information in novel data sets.
 
 >cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/cluster_freqs.ipynb)
 
->euclidean diststances using observed freq. vectors: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Euclidian_to_fst.ipynb)
+>euclidean distances using observed frequency vectors: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Euclidian_to_fst.ipynb)
 
 >example application - simulation and kde study: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
 
