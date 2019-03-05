@@ -203,8 +203,15 @@ def window_fst_sup(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,range_sample= [],r
             
         Pairwise= return_fsts2(np.array(these_freqs))
         sim_fst.append(list(Pairwise.fst))
+    
+    ###
         
     return sim_fst
+
+
+from structure_tools.AMOVA_func import AMOVA_FM42, amova_cofactor
+
+include_who= [0,1]
 
 
 def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,supervised= True,include_who= [],
@@ -341,7 +348,8 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
         for hill in SpaceX.keys():
 
             if len(Tree[hill]) >= cl_freqs:
-                if not supervised:
+                if supervised == False:
+                    print('hi')
                     cl_seqs= Sequences[Tree[hill],:]
 
                     freq_vector= [float(x) / (cl_seqs.shape[0] * 2) for x in np.sum(cl_seqs,axis= 0)]
@@ -375,11 +383,16 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             labels= [x for x in kde_class_labels if x in ref_labels]
             Who= [z for z in it.chain(*[kde_label_dict[x] for x in ref_labels])]
             Ngps= len(ref_labels)
-
+            
+            
+            print(ref_labels)
             for hill in ref_labels:
 
                 if len(kde_label_dict[hill]) >= cl_freqs:
-                    cl_seqs= Sequences[kde_label_dict[hill],:]
+                    if include_who:
+                        Seq_specific= Sequences[include,:]
+                        
+                    cl_seqs= Seq_specific[kde_label_dict[hill],:]
 
                     freq_vector= [float(x) / (cl_seqs.shape[0] * 2) for x in np.sum(cl_seqs,axis= 0)]
 
@@ -392,8 +405,10 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             labels = [labels[x] for x in Who]
             Who= [Focus_labels[x] for x in Who]
 
-        print(len(these_freqs))
+        #
+        print(np.array(these_freqs).shape)
         Pairwise= return_fsts2(np.array(these_freqs))
+        print(Pairwise.fst)
         sim_fst.extend(Pairwise.fst)
         
 
@@ -410,14 +425,15 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             Results['info'].append([Chr,c,AMOVA,Ngps])
 
     Results['info']= pd.DataFrame(np.array(Results['info']),columns= ['chrom','window','AMOVA','Ngps'])
-    X_plot = np.linspace(0, .3, 1000)
+    
+    X_plot = np.linspace(0, .3, 100)
 
     freq_kde = KernelDensity(kernel='gaussian', bandwidth=0.01).fit(np.array(sim_fst).reshape(-1,1))
 
     log_dens = freq_kde.score_samples(X_plot.reshape(-1,1))
 
     fig_roost_dens= [go.Scatter(x=X_plot, y=np.exp(log_dens), 
-                                mode='lines', fill='tozeroy', name= 'mRNA pVal',
+                                mode='lines', fill='tozeroy', name= '',
                                 line=dict(color='blue', width=2))]
     ##
 

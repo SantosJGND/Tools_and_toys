@@ -55,7 +55,7 @@ information in novel data sets.
 
 >link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
 
->vcf analysis: PCA, global and window based. Supervised classification of simulated data: [vcf analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/vcf_analysis/vcf_analysis.ipynb)
+>vcf analysis: PCA, global and window based, supervised classification of simulated data: [vcf analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/vcf_analysis/vcf_analysis.ipynb)
 
 - **MeanShift for structure analysis** - *use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.*
 
