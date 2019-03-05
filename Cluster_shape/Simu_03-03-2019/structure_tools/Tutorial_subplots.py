@@ -282,7 +282,7 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_w
             yaxis=dict(
                 title='Individual positions along PC1 across data sets'),
             xaxis=dict(
-                title='Ideogram')
+                title='data sets: extraction order')
         )
 
         fig= go.Figure(data=fig_data, layout=layout)
@@ -316,7 +316,7 @@ def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= 
             title='Fst',
             range= [0,.3]),
         xaxis=dict(
-            title= ''.format(['extraction order','sorted'][int(sort)]))
+            title= 'data sets: '.format(['extraction order','sorted'][int(sort)]))
     )
 
     fig= go.Figure(data=fig_fst, layout=layout)
