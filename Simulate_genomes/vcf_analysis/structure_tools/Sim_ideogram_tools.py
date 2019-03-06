@@ -4,6 +4,7 @@ import re
 import scipy
 import itertools as it
 
+from IPython.display import clear_output
 from sklearn.neighbors import KernelDensity
 from sklearn.decomposition import PCA
 from sklearn.model_selection import GridSearchCV
@@ -476,6 +477,7 @@ def KDE_windows(Windows,label_vector,ref_labels,Out,colors= 'standard',alt_col= 
 
         ### store stuff.
         Windows_profiles[1][bl]= profiles
+        clear_output()
     
     
     var_comp_store= np.array(var_comp_store)
