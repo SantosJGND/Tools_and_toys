@@ -18,7 +18,6 @@ qsub -N Freqs_single -V -q normal.q -l mem_free=30G -b y python -u cluster_frequ
 --admx /gs7k1/home/jgarcia/PO_Core/admx_CORE.txt \
 --amova \
 --supervised \
--w 150 \
 --random \
 -w 150 \
 --randN 1000 \
