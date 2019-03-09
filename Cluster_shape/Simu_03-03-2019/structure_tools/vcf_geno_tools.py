@@ -5,8 +5,6 @@ import collections
 import re
 import scipy
 
-from structure_tools.AMOVA_func import AMOVA_FM42, amova_cofactor
-
 from sklearn.neighbors import KernelDensity
 from sklearn.decomposition import PCA
 from sklearn.model_selection import GridSearchCV
@@ -20,6 +18,9 @@ from plotly.offline import iplot
 from IPython.display import clear_output
 
 from structure_tools.Modules_tools import return_fsts2
+
+from structure_tools.AMOVA_func import AMOVA_FM42, amova_cofactor
+
 
 def recursively_default_dict():
         return collections.defaultdict(recursively_default_dict)
@@ -207,11 +208,6 @@ def window_fst_sup(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,range_sample= [],r
     ###
         
     return sim_fst
-
-
-from structure_tools.AMOVA_func import AMOVA_FM42, amova_cofactor
-
-include_who= [0,1]
 
 
 def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,supervised= True,include_who= [],
@@ -406,9 +402,7 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             Who= [Focus_labels[x] for x in Who]
 
         #
-        print(np.array(these_freqs).shape)
         Pairwise= return_fsts2(np.array(these_freqs))
-        print(Pairwise.fst)
         sim_fst.extend(Pairwise.fst)
         
 

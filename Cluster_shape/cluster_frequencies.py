@@ -45,6 +45,8 @@ parser.add_argument("--bim",help = "snp information bim format.")
 
 parser.add_argument("--amova",action= 'store_true',help= 'perform AMOVA')
 
+parser.add_argument("--dist_metric",type= str,default= 'euclidean',help = "Distance metric to use")
+
 parser.add_argument("--aims",type= str,default= '',help = "genetic window file file")
 
 parser.add_argument("--supervised",action= 'store_true',help= 'use ref groups for supervised analysis.')
@@ -62,8 +64,6 @@ parser.add_argument("--clsize",type = int,default = 15,help = "Minimum cluster s
 parser.add_argument("--out",type= str,default= '',help = "output directory")
 
 parser.add_argument("--id",type= str,default= 'StructE',help = "Give your analysis an ID.")
-### 
-parser.add_argument("--dr",default = 'PCA',help = "Dimensionality reduction. options: PCA, NMF")
 ### 
 parser.add_argument("--ncomp",type = int,default = 4,help = "Number of components kept in case of PCA reduction")
 ### 
@@ -107,14 +107,17 @@ if absent_refs:
     print(",".join([str(x) for x in absent_refs]) + ' absent from provided refs.')
 
 
-admx_lib, Crossed, absent_admx  = Ste.read_refs(args.admx,Fam)
+Geneo= refs_lib
 
-if len(absent_admx) > (0.5 * len(Crossed)):
-    print('over half the admixed missing from fam file.')
-    
-admx_lib.update(refs_lib)
+if args.admx:
+    admx_lib, Crossed, absent_admx  = Ste.read_refs(args.admx,Fam)
 
-Geneo = admx_lib
+    if len(absent_admx) > (0.5 * len(Crossed)):
+        print('over half the admixed missing from fam file.')
+        
+    admx_lib.update(refs_lib)
+
+    Geneo = admx_lib
 
 print('Population labels: {}'.format(Geneo.keys()))
 
@@ -134,14 +137,15 @@ Names_store = Fam
 ##
 
 ## Generate random regions
-if args.random:
-    Genes = Ste.Gen_rand(MissG,Books.Chr,args.randN,args.w)
-    print('random analysis selected. {} regions of size {} generated.'.format(args.randN,args.w))
-else:
-    if args.aims == '':
-        print('--random nor --Aims provided.')
+if args.aims:
+    print('targeted analysis selected. reading from {}'.format(args.aims))
     ## /gs7k1/home/jgarcia/miRNA/MirBase_clean.txt
     Genes = Ste.read_selected(args.aims,mrg= args.mrg)
+    
+else:
+    print('random analysis selected. {} regions of size {} generated.'.format(args.randN,args.w))
+    Genes = Ste.Gen_rand(MissG,Books.Chr,args.randN,args.w)
+
 
 ## remove regions with no SNPs
 Genes = {x:Genes[x] for x in Genes.keys() if len(Genes[x]) > 0}
@@ -289,9 +293,14 @@ for CHR in SequenceStore.keys():
             continue
         
         if args.amova:
-            AMOVA,Cig = AMOVA_FM42(data[Who,:],labels,n_boot=0,metric= 'euclidean')
+            if args.dist_metric != 'euclidean':
+                data= Sequences.astype(bool)
+                
+            AMOVA,Ciggy= AMOVA_FM42(data[Who,:],labels,n_boot=0,metric= dist_metric)
+            
+            Results[CHR][c] = [Ngps,AMOVA]
             print('couting: {}, Ngps: {}'.format(AMOVA,Ngps))
-            Results[CHR][c] = [AMOVA,Ngps]
+            
 
 print("MS PCA.")
 

@@ -19,7 +19,6 @@ qsub -N Freqs_single -V -q normal.q -l mem_free=30G -b y python -u cluster_frequ
 --amova \
 --supervised \
 -w 150 \
---dr PCA \
 --random \
 -w 150 \
 --randN 1000 \

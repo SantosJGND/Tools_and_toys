@@ -16,8 +16,41 @@ inadvertently capture local genetic exchanges, biasing estimations.
 We turn to mean shift, a density based clustering algorithm, to circumvent this issue.
 
 By calculating allele frequencies of local clusters, we ensure that the estimates 
-are free from admixture. 
+are free from admixture. The script `cluster_frequencies.py` was created to sample 
+allele frequencies across genomic data sets in `.geno` format. Genotype files must 
+contain the string `_chr` followed by the respective chromosome number. Accompanying sample and
+marker information is required in the form `.fam` and `.bim`files respectively 
+([plink](http://zzz.bwh.harvard.edu/plink/) format). a reference file is required, 
+indicating samples to use and their respective population labels ([ex. ref file](https://github.com/SantosJGND/Galaxy_KDE_classifier/blob/master/Simulation_test/refs_sim.txt)).
 
->example application - simulation: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
+The argument `--aims` takes a file of genomic regions to survey. The file must contain
+columns **CHR**, **start**, **end** and **ID**, but the function that performs the reading
+can be passed alternative column names as arguments. A margin, in bp, upstream and 
+downstream of regions in file can be set using the argument `--mrg` (defaults to 1000).
 
->from .vcf - simulation: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Simu_03-03-2019/custom_manipulation.ipynb)
+If the `--aims` argument is not given windows will be sampled randomly across the genotype files provided. 
+Window size is determined by `-w` (defaults to 150) in SNPs, the number of windows by the argument 
+`--randN`. 
+
+If the argument `--amova` is passed, the among population variance component is calculated
+across genomic windows. Defaults to calculations using euclidean distances in PCA feature space.
+Alternatively, the user can specify using jaccard or hamming distances on haplotypes directly.
+Metric option is set using the argument `--dist_metric`, possible arguments 'euclidean, 'hamming', 'jaccard'.
+In theory takes any string afforded by the argument `metric` of the function 
+[scipy.spatial.distance.pdist](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html).
+
+If the argument `--supervised` is passed, then AMOVA, frequency and KDE estimates will 
+be calculated at each window using reference labels. Otherwise, analyses are 
+calculated on locally estimated mean shift clusters. 
+
+An example job: [command](CLshape_command.txt)
+
+Summary analysis and application:
+
+>cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/cluster_freqs.ipynb)
+
+>euclidean distances using observed frequency vectors: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Euclidian_to_fst.ipynb)
+
+>example application - simulation and kde study: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
+
+>input adaptation: [structure simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Structure_simulator.ipynb)

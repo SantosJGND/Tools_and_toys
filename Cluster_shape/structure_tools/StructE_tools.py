@@ -100,6 +100,25 @@ def BIMread(bimFile):
     return Nsnps,Gindex
 
 
+def read_selected(filename,CHR= 'CHR',start= 'start',end='end',ID= 'ID'):
+    d= 0
+    
+    Genes= recursively_default_dict()
+    
+    Input= open(filename,'r')
+    for line in Input:
+        if d== 0:
+            Names= line.strip().split()
+            cols= {
+                line[x]:x for x in range(len(line))
+            }
+            d += 1
+            continue
+        
+        line= line.strip().split()
+        Genes[line[cols[CHR]]][int(line[cols[start]])]= [int(line[cols[end]]), line[cols[ID]]]
+    
+    return Genes
 
 
 def read_geno_books(books):
