@@ -4,11 +4,11 @@ Estimate allele frequency from real data.
 
 Population genetic simulation usually relies on the Beta distribution as a model 
 of allele frequencies of stationary populations. Realistically it is rarelly the 
-case that natural populations are sufficiently ideal that genetic structure is 
-stationary. The alternative commonly resorted to is to model frequencies as a function
+case that the set conditions required to achieve this ideal state is met in natural 
+scenarios. The alternative commonly resorted to is to model frequencies as a function
 of prior knowledge on the history of the populations studied.
 
-This repository proposes to model allele frequency distributions from real data.
+This repository proposes to extract the allele frequencies of local genomic windows from real data.
 The usual problem with this approach is the degree of admixture in natural populations,
 casting doubt on allele frequency estimates calculated along the genome, which might
 inadvertently capture local genetic exchanges, biasing estimations.
@@ -20,8 +20,10 @@ are free from admixture. The script `cluster_frequencies.py` was created to samp
 allele frequencies across genomic data sets in `.geno` format. Genotype files must 
 contain the string `_chr` followed by the respective chromosome number. Accompanying sample and
 marker information is required in the form `.fam` and `.bim`files respectively 
-([plink](http://zzz.bwh.harvard.edu/plink/) format). a reference file is required, 
+([plink](http://zzz.bwh.harvard.edu/plink/) format). A reference file is required, 
 indicating samples to use and their respective population labels ([ex. ref file](https://github.com/SantosJGND/Galaxy_KDE_classifier/blob/master/Simulation_test/refs_sim.txt)).
+A file of non-reference accessions can also be provided using the flag `--admx` (ref file format). 
+These will not be used for supervised analyses, but will be included in KDE estimates. 
 
 The argument `--aims` takes a file of genomic regions to survey. The file must contain
 columns **CHR**, **start**, **end** and **ID**, but the function that performs the reading
@@ -47,10 +49,10 @@ An example job: [command](CLshape_command.txt)
 
 Summary analysis and application:
 
->cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/cluster_freqs.ipynb)
+>cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Notebooks/cluster_freqs.ipynb)
 
->euclidean distances using observed frequency vectors: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Euclidian_to_fst.ipynb)
+>euclidean distances using observed frequency vectors: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Notebooks/Euclidian_to_fst.ipynb)
 
->example application - simulation and kde study: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/custom_manipulation.ipynb)
+>example application - simulation and kde study: [simulation notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Notebooks/custom_manipulation.ipynb)
 
->input adaptation: [structure simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Structure_simulator.ipynb)
+>input adaptation: [structure simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Notebooks/Structure_simulator.ipynb)
