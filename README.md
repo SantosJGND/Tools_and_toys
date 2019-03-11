@@ -25,6 +25,8 @@ facilitate development by the user. Under **MS_target** are introduced functions
 density-based clustering algorithm, to characterise and visualize specific patterns, and to use this 
 information in novel data sets.
 
+**Cluster shape frequencies** focuses on the study and use of allele frequencies at local genetic genetic windows. 
+
 
 ## Genetic Analysis
 
@@ -61,7 +63,7 @@ information in novel data sets.
 
 >link to tutorial: [MStarget_tutorial](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/MS_target/MStarget_tutorial.ipynb)
 
-- **Cluster allele frequencies** - use mean shift to control for admixture in calculating local allele frequencies.
+- **Cluster allele frequencies** - *use mean shift to control for admixture in calculating local allele frequencies.*
 
 >cluster frequency analysis: [data view notebook](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Notebooks/cluster_freqs.ipynb)
 
@@ -73,7 +75,7 @@ information in novel data sets.
 
 > [README](/Cluster_shape)
 
-- **From vcf** - analysis of global and local variation, supervised assignment, use for simulation.
+- **From vcf** - *analysis of global and local variation, supervised assignment, use for simulation.*
 
 >PCA, global and window based. Supervised classification: [vcf_analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Simu_03-03-2019/vcf_analysis.ipynb)
 
