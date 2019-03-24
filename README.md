@@ -57,7 +57,7 @@ information in novel data sets.
 
 >link to tutorial: [Genome simulator](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/Genomic%20structure%20Simulator.ipynb)
 
->vcf analysis: PCA, global and window based, supervised classification of simulated data: [vcf analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Simulate_genomes/vcf_analysis/vcf_analysis.ipynb)
+>vcf analysis: PCA, global and window based, supervised classification of simulated data: [vcf analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/vcf_analysis/vcf_analysis.ipynb)
 
 - **MeanShift for structure analysis** - *use meanshift to relate clusters across data sets. Adapted to the study of local genomic variation.*
 
@@ -75,8 +75,15 @@ information in novel data sets.
 
 > [README](/Cluster_shape)
 
+
 - **From vcf** - *analysis of global and local variation, supervised assignment, use for simulation.*
 
->PCA, global and window based. Supervised classification: [vcf_analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Simu_03-03-2019/vcf_analysis.ipynb)
+>PCA, global and window based. Supervised classification.
 
->Frequency feed: [simulation basic](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Cluster_shape/Simu_03-03-2019/custom_manipulation.ipynb)
+>Simulated_data: [vcf_analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Simu_03-03-2019/vcf_analysis.ipynb)
+
+>Extract of real data: [Gy_pipeline](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Extract/vcf_analysis.ipynb)
+
+>Frequency feed: [simulation basic](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Simu_03-03-2019/custom_manipulation.ipynb)
+
+>[README](/VCF_analysis)
