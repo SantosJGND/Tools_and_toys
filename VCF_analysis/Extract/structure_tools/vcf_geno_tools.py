@@ -201,6 +201,54 @@ def check_densities(vector_lib_2,N):
     return freqs
 
 
+
+####
+
+def geno_subset_random(genotype, RG_info, Names, Sn= 500, Sm= 10000):
+
+    ### Subset to acceptable range of accessions x markers.
+
+    Present= [x for x in range(len(Names)) if Names[x] in list(RG_info[ID_col])]
+
+    if len(Present) < genotype.shape[0]:
+        '{} IDs missing'.format(genotype.shape[0] - len(Present))
+
+    Nsample= sorted(np.random.choice(Present,Sn,replace= False))
+    Msample= sorted(np.random.choice(list(range(genotype.shape[1])),Sm,replace= False))
+
+    ###
+    gen_sample= np.array(genotype[Nsample,:])
+
+    gen_sample= np.array(gen_sample[:,Msample])
+
+    subsummary= summary.loc[Msample,:]
+
+    subsummary= subsummary.reset_index()
+
+    Names_select= [Names[x] for x in Nsample]
+
+    ###
+
+    print('gen_sample shape: {}, {}'.format(len(Nsample),len(Msample)))
+
+    ###
+
+    Name_idx= [list(RG_info[ID_col]).index(x) for x in Names_select]
+    code_vec= [RG_info[subset_col][x] for x in Name_idx]
+
+    #code_vec= [code_vector[x] for x in Nsample]
+    code_vec= [[x,others][int(x not in code.keys())] for x in code_vec]
+
+    code_vec= [code[x] for x in code_vec]
+
+    code_lib= {
+        z:[x for x in range(len(code_vec)) if code_vec[x] == z] for z in list(set(code_vec))
+    }
+
+    return gen_sample, subsummary, code_vec, code_lib
+
+
+####
 def geno_window_split(genotype,summary,Steps= 25,window_size=100):
 
     window_starts= list(np.arange(0,genotype.shape[1],Steps))

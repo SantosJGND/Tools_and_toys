@@ -33,7 +33,7 @@ The notebook Extract_analysis is further equiped with the second layer of the pi
 
     ii. Structure analysis of p-value matrix. Clustering and profile analysis.
 
-    iii. Local classificaiton of local haplotypes using cluster similarity. 
+    iii. Local classification of local haplotypes using cluster similarity. 
 
 
 
