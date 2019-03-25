@@ -78,8 +78,6 @@ information in novel data sets.
 
 - **From vcf** - *analysis of global and local variation, supervised assignment, use for simulation.*
 
->PCA, global and window based. Supervised classification.
-
 >Simulated_data: [vcf_analysis](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Simu_03-03-2019/vcf_analysis.ipynb)
 
 >Extract of real data: [Gy_pipeline](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Extract/vcf_analysis.ipynb)
