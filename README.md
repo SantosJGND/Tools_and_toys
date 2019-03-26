@@ -82,6 +82,8 @@ information in novel data sets.
 
 >Extract of real data: [Gy_pipeline](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Extract/vcf_analysis.ipynb)
 
+>Extract Rice Data - [kde_curate](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Extract/kde_curate.ipynb)
+
 >Frequency feed: [simulation basic](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Simu_03-03-2019/custom_manipulation.ipynb)
 
 >[README](/VCF_analysis)
