@@ -3,8 +3,10 @@ from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 
 import numpy as np
 import pandas as pd
+import itertools as it
 import os
 
+from structure_tools.Sim_ideogram_tools import compress_ideo
 
 from matplotlib import pyplot as plt
 
@@ -207,16 +209,17 @@ def mpl_target_ideo(gp,
         order= list(range(len(Focus)))
     
     Ideo = []
-    chromosome_list= ['chr'+str(Chr)+ '_' + Subject for Subject in Focus]
+    chromosome_list= ['chr'+str(Chr)+ '_' + Focus[Subject] for Subject in order]
     
     for row in range(Chromo_coord.shape[0]):
             # filled Rectangle
             CHR= Chromo_coord.iloc[row,:].chrom
             start= Chromo_coord.iloc[row,:].start
             end= Chromo_coord.iloc[row,:].end
-            trigger= [order[int(x)] for x in Chromo_coord.iloc[row,:].members.split('.')]
             
-            label= Chromo_coord.iloc[row,:].label + 1
+            trigger= [int(x) for x in Chromo_coord.iloc[row,:].members.split('.') if int(x) in order]
+            
+            label= Chromo_coord.iloc[row,:].label 
             color= Colors[-1]
             
             if label in gp:
@@ -308,4 +311,74 @@ def mpl_target_ideo(gp,
                 plt.savefig(filename,bbox_inches = 'tight')
         
         return fig
+
+
+
+def renew_ideo(Blocks_ori,Coordinates,decisions,Out,label_vector,groups_plot=[0],colors= 'standard',
+                  alt_col= []):
+
+    label_coords= {
+        z:[x for x in range(len(label_vector)) if label_vector[x] == z] for z in list(set(label_vector))
+    }
+
+
+    focus_indexes= list(it.chain(*[label_coords[x] for x in groups_plot]))
+
+    if colors== 'standard':
+        color_ref= ['red','yellow','blue','black','orange','purple','green','silver','silver','red3','deepskyeblue','navy','chartreuse','darkorchid3','goldenrod2']
+    else:
+        color_ref= alt_col
+
+    #Blocks = Merge_class(Windows_profiles,focus_indexes,Out,Comparison_threshold,Outlier_threshold)
+    
+    print('{} steps provided.'.format(len(decisions)))
+
+    New_blocks= Blocks_ori
+    
+    for step in decisions.keys():
         
+        print('step {}, {} moves: {}'.format(step,len(decisions[step]['moves']),','.join(['({} -> {})'.format(v,g) for v,g in decisions[step]['moves'].items()])))
+        
+        cluster_labs= decisions[step]['labs']
+        cluster_dict= {
+            z: [x for x in range(len(cluster_labs)) if cluster_labs[x] == z] for z in list(set(cluster_labs))
+        }
+        
+        for move in decisions[step]['moves'].keys():
+            print(move)
+            if move in cluster_dict.keys():
+                for cl in cluster_dict[move]:
+                    CHR= Coordinates.iloc[cl,:].chrom
+                    start= Coordinates.iloc[cl,:].start
+                    membership= [int(x) for x in Coordinates.iloc[cl,:].members.split('.') if int(x) in focus_indexes]
+                    
+                    membership= [focus_indexes.index(x) for x in membership]
+                    
+                    for assign in membership:
+                        New_blocks[CHR][start][assign]= decisions[step]['moves'][move] + 1
+    
+    Ideo_KDE = []
+    chromosome_list= []
+    chromosomes= Blocks_ori.keys()
+
+    for here in range(len(focus_indexes)):
+        Subject = 'sample' + str(focus_indexes[here])
+
+        chromosome_list.extend(['Region_chr'+str(Chr)+ '_' + Subject for Chr in chromosomes])
+
+        Stock = [[['Region_chr'+str(Chr)+ '_' + Subject,bl,Out[Chr][bl],color_ref[New_blocks[Chr][bl][here] - 1]] for bl in sorted(New_blocks[Chr].keys())] for Chr in chromosomes]
+        Stock = [y for y in it.chain(*[z for z in it.chain(*[Stock])])]
+
+        Ideo_KDE.extend(Stock)
+
+    #### begin by compressing assignments by individuals. Lightens the load of the following plot.
+    import re
+    ideo_kde = pd.DataFrame(Ideo_KDE,columns = ['chrom', 'start', 'end', 'gieStain'])
+
+    # Filter out chromosomes not in our list
+    ideo_kde = ideo_kde[ideo_kde.chrom.apply(lambda x: x in chromosome_list)]
+
+    ideo_kde = compress_ideo(ideo_kde,chromosome_list,Out)
+
+    return New_blocks, ideo_kde, chromosome_list
+

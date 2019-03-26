@@ -12,6 +12,8 @@ from sklearn.cluster import MeanShift, estimate_bandwidth
 from matplotlib import pyplot as plt
 from matplotlib.collections import BrokenBarHCollection
 
+from IPython.display import clear_output
+
 import collections
 
 def recursively_default_dict():
@@ -359,7 +361,7 @@ def chromosome_collections(df, y_positions, height,  **kwargs):
 
 
 
-def return_ideogram(ideo, chromosome_list,ID,out= True,height=30,width= 10):
+def return_ideogram(ideo, chromosome_list,ID,out= True,height=30,width= 10,xticks= 100000,ypad= 30,xpad=10,xfont= 10):
     # Height of each ideogram
     chrom_height = 1
 
@@ -437,12 +439,12 @@ def return_ideogram(ideo, chromosome_list,ID,out= True,height=30,width= 10):
         ax.add_collection(collection)
 
     # Axes tweaking
-    ax.set_xticks([x for x in range(min(ideo.start),max(ideo.end),int(10000))])
-    ax.set_xticklabels([round(x / float(10000),3) for x in range(min(ideo.start),max(ideo.end),int(10000))])
-    plt.xticks(fontsize = 5,rotation = 90)
-    ax.tick_params(axis = 'x',pad = 10)
+    ax.set_xticks([x for x in range(min(ideo.start),max(ideo.end),int(xticks))])
+    ax.set_xticklabels([round(x / float(xticks),3) for x in range(min(ideo.start),max(ideo.end),int(xticks))])
+    plt.xticks(fontsize = xfont,rotation = 90)
+    ax.tick_params(axis = 'x',pad= xpad)
 
-    ax.tick_params(axis='y', which='major', pad=30)
+    ax.tick_params(axis='y', which='major', pad= ypad)
     ax.set_yticks([chrom_centers[i] for i in chromosome_list])
     ax.set_yticklabels(chromosome_list, fontsize = 5)
     ax.axis('tight')
@@ -453,7 +455,8 @@ def return_ideogram(ideo, chromosome_list,ID,out= True,height=30,width= 10):
 
 
 
-def KDE_window_profiles(Windows,label_vector,ref_labels,n_comps= 4):
+
+def KDE_window_profiles(Windows,label_vector,ref_labels,Chr= 1,n_comps= 4):
 
     target_indx= {z:[x for x in range(len(label_vector)) if label_vector[x] == z] for z in ref_labels}
 
@@ -485,7 +488,6 @@ def KDE_window_profiles(Windows,label_vector,ref_labels,n_comps= 4):
     var_comp_store= pd.DataFrame(var_comp_store,columns=['set',*['PC' + str(x + 1) for x in range(n_comps)]])
 
     return Windows_profiles, var_comp_store
-
 
 
 
@@ -529,7 +531,7 @@ def class_and_ideo(Windows_profiles,Out,label_vector,Comparison_threshold= 3,Out
 
     ideo_kde = compress_ideo(ideo_kde,chromosome_list,Out)
 
-    return ideo_kde, chromosome_list
+    return Blocks, ideo_kde, chromosome_list
 
 
 

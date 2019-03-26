@@ -204,7 +204,8 @@ def check_densities(vector_lib_2,N):
 
 ####
 
-def geno_subset_random(genotype, RG_info, Names, Sn= 500, Sm= 10000):
+
+def geno_subset_random(genotype, summary, RG_info, ID_col,subset_col,Names,code= {},others= 'admx',Sn= 500, Sm= 10000):
 
     ### Subset to acceptable range of accessions x markers.
 
@@ -245,7 +246,7 @@ def geno_subset_random(genotype, RG_info, Names, Sn= 500, Sm= 10000):
         z:[x for x in range(len(code_vec)) if code_vec[x] == z] for z in list(set(code_vec))
     }
 
-    return gen_sample, subsummary, code_vec, code_lib
+    return gen_sample, subsummary, code_vec, code_lib, Nsample, Msample
 
 
 ####

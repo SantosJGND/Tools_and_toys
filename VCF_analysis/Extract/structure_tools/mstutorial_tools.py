@@ -2,6 +2,7 @@ import numpy as np
 import collections
 import itertools as it
 import scipy 
+import pandas as pd
 
 def recursively_default_dict():
         return collections.defaultdict(recursively_default_dict)
@@ -368,6 +369,96 @@ def MAC_process(Construct,Out,Cl_store,refs_lib,Fam,Names= [],target_var= [],Dr_
     new_labs= labels1
 
     return preProc_Clover, Cameo, Coordinates, COMPS, X_se, label_select, Subset, labels1
+
+
+
+def MAC_predict(Construct,Blocks,Out,blocks_gp= [],label_vector= [],target_class= [],start= 0,end= 1e6,threshold= 1e-4):
+    
+    label_coords= {
+        z:[x for x in range(len(label_vector)) if label_vector[x] == z] for z in list(set(label_vector))
+    }
+    
+    labels_lib= {
+        z:[] for z in target_class
+    }
+
+
+    focus_indexes= list(it.chain(*[label_coords[x] for x in blocks_gp]))
+    
+    Membership=[]
+    Coordinates= []
+    Accuracy= []
+    
+    for CHR in sorted(Construct.keys()):
+        for bl in sorted(Construct[CHR].keys()):
+            
+            block_assignments= Blocks[CHR][bl]
+            
+            block_dict= {
+                z: [focus_indexes[x] for x in range(len(block_assignments)) if block_assignments[x]==z] for z in list(set(block_assignments))
+            }
+            
+            Bls= sorted(list(Construct[CHR][bl].keys()))
+            pVals= np.array([Construct[CHR][bl][y] for y in Bls])
+            
+            max_vals= np.amax(pVals,axis= 0)
+            max_indx= np.argmax(pVals,axis= 0)
+            
+            inlier= [x for x in range(pVals.shape[1]) if max_vals[x] >= threshold]
+            
+            BL_select= list(set([max_indx[x] for x in inlier]))
+            
+            
+            #print('clusters {} selected. {} %'.format(BL_select,len(BL_select)/float(len(Bls))))
+            
+            if not BL_select:
+                Empty.append([CHR,bl])
+                continue
+            
+            BL_select= { 
+                x: pVals[x] for x in BL_select
+                }
+            
+            Assignment= {
+                    Bls[b]: [x for x in inlier if max_indx[x] == b] for b in BL_select.keys()
+                }
+            
+            ## Accuracy of target classificaiton
+                
+            for requiem in target_class:
+                if requiem in block_dict.keys() and bl >= start and Out[CHR][bl] <= end:
+
+                    for cl in Assignment.keys():
+                        acc= [x for x in Assignment[cl] if x in block_dict[requiem]]
+                        acc= len(acc) / float(len(Assignment[cl]))
+                        labels_lib[requiem].append(acc)
+
+                else:
+                    labels_lib[requiem].extend([0]*len(Assignment))
+            
+            for cl in Bls:
+                if cl not in Assignment.keys():
+                    vector= ''
+                else:
+                    vector= '.'.join([str(x) for x in Assignment[cl]])
+                
+                Coordinates.append([CHR,bl,Out[CHR][bl],cl])
+                Membership.append(vector)
+
+    
+    #Membership= np.array(Membership)
+    print(len(Accuracy))
+    print(len(Membership))
+    
+    Coordinates= pd.DataFrame(Coordinates,columns= ['chrom','start','end','bl'])
+    Coordinates['members']= Membership
+    
+    for label in labels_lib.keys():
+        Coordinates['class_' + str(label)]= labels_lib[label]
+    #Coordinates['Acc']= Accuracy
+    
+
+    return Coordinates
 
 
 
