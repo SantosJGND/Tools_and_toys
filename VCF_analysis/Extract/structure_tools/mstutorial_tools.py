@@ -462,6 +462,134 @@ def MAC_predict(Construct,Blocks,Out,blocks_gp= [],label_vector= [],target_class
 
 
 
+def class_structure_plot(Coordinates, Windows, Construct, plot_classes= [],
+                                        Chr= 1,
+                                        n_comp= 5,
+                                        height= 1000,
+                                        width= 900,
+                                        Col_vec= [],
+                                         text= [],
+                                        coords= {}):
+    
+    class_dict= {}
+
+    
+    for class_get in plot_classes:
+
+        coords_label= Coordinates[(Coordinates.label == class_get)]
+        if coords_label.shape[0] == 0:
+            continue
+
+        windows_in= list(set(coords_label.start))
+
+        gendata_select= tuple([Windows[Chr][bl] for bl in windows_in])
+        gendata_select= np.concatenate(gendata_select,axis= 1)
+
+
+        pca = PCA(n_components=n_comp, whiten=False,svd_solver='randomized')
+
+        feats_local= pca.fit_transform(gendata_select)
+
+        class_profiles= []
+
+        for idx in range(coords_label.shape[0]):
+            row= coords_label.iloc[idx,:]
+            which= row.start
+            who= row.bl
+            class_profiles.append(Construct[Chr][which][who])
+
+        class_profiles= np.array(class_profiles)
+        class_profMean= np.mean(class_profiles,axis= 0)
+
+        class_dict[class_get]= {
+            'profile': class_profMean,
+            'PCA': feats_local
+        }
+
+    Ncols= 2
+    Nclasses= len(class_dict)
+    
+    plot_classes= [x for x in class_dict if x in class_dict.keys()]
+
+    titles=[['Ref_labels; class_ ' + str(x),'MS mean; class_ ' + str(x)] for x in plot_classes]
+    label_plot= [[0,1] for x in plot_classes]
+
+    titles= list(np.repeat(titles,2))
+    label_plot=list(np.repeat(label_plot,2))
+
+    PCs= [1,2]*len(titles)
+
+    row_codes= list(np.repeat(plot_classes,4))
+    
+    fig_pca_subplots = tools.make_subplots(rows= int(len(titles) / float(Ncols)) + (len(titles) % Ncols > 0), cols=Ncols,
+                             subplot_titles=tuple(titles))
+
+    #####
+    m= 0
+    d= 0
+
+    for subp in range(len(titles)):
+
+        class_get= row_codes[subp] 
+        feats_row= class_dict[class_get]['PCA']
+
+        pos1= int(float(subp) / Ncols) + 1
+
+        pos2= subp % Ncols + 1
+
+        n_plot= subp
+
+
+        if label_plot[subp] == 1:
+
+            trace= go.Scatter(
+            x = feats_row[:,0],
+            y = feats_row[:,PCs[subp]],
+            mode= "markers",
+            marker= {
+                'color': class_dict[class_get]['profile'],
+                'colorscale':'Viridis',
+                'line': {'width': 0},
+                'size': 6,
+                'symbol': 'circle',
+                "opacity": .6
+            })
+
+            fig_pca_subplots.append_trace(trace, row=pos1, col=pos2)
+
+
+        else:
+
+            for i in coords.keys():
+                if coords[i]:
+                    trace= go.Scatter(
+                    x = feats_row[coords[i],0],
+                    y = feats_row[coords[i],PCs[subp]],
+                    text= [text[x] for x in coords[i]],
+                    mode= "markers",
+                    name= str(i),
+                    marker= {
+                    'color': Col_vec[i],
+                    'line': {'width': 0},
+                    'size': 6,
+                    'symbol': 'circle',
+                    "opacity": .8})
+
+                    fig_pca_subplots.append_trace(trace, row=pos1, col=pos2)
+
+            d += 1
+
+
+        fig_pca_subplots['layout']['yaxis' + str(n_plot + 1)].update(title='PC{}'.format(pos2+1))
+        fig_pca_subplots['layout']['xaxis' + str(n_plot + 1)].update(title='PC1')
+
+    fig_pca_subplots['layout'].update(height= height,width= width)
+
+    #fig= go.Figure(data=fig_pca_subplots, layout=layout)
+    iplot(fig_pca_subplots)
+
+
+
 def KDE_pca(feats= [],Cameo= [],label_vector= [],Subset= [],Col_vec= [],height= 2000,width= 1000):
     
     Ncols= 2
@@ -528,6 +656,8 @@ def KDE_pca(feats= [],Cameo= [],label_vector= [],Subset= [],Col_vec= [],height= 
     
     #fig= go.Figure(data=fig_pca_subplots, layout=layout)
     iplot(fig_pca_subplots)
+
+
 
 
 def MS_ideogram(gp,MS_threshold,Clover,Coordinates,label_select,Out,ideo_order= [],Chr= 1,height_chrom= .5,height= 10,width= 5):
