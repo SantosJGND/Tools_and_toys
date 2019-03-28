@@ -40,6 +40,7 @@ The notebook `Gy_pipeline` is further equiped with the second layer of the pipel
 
 >iii. Classification of local haplotypes using cluster similarity. 
 
+
 #### Curation
 
 The notebook `kde_curate` uses the supervised classification of local haplotypes 
