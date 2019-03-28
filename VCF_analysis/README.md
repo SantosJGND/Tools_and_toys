@@ -38,7 +38,7 @@ The notebook `Gy_pipeline` is further equiped with the second layer of the pipel
 
 >ii. Structure analysis of p-value matrix. Clustering and profile analysis.
 
->iii. Local classification of local haplotypes using cluster similarity. 
+>iii. Classification of local haplotypes using cluster similarity. 
 
 #### Curation
 
