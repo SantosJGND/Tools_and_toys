@@ -1,0 +1,228 @@
+
+
+########### Twillight zone ###
+
+qsub -N Bhutan_chrom01 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 1 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr01.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Bhutan_chrom01 \
+--start 15000000 \
+--end 18000000 \
+--bornes 1000
+
+
+
+qsub -N Bhutan_chrom08 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 8 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Bhutan_II_chrom08_new \
+--start 12000000 \
+--end 14000000 \
+--bornes 1000
+
+
+qsub -N China_longS_chrom08 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 8 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id ChinaLong_S_chrom08 \
+--start 4900000 \
+--end 5100000 \
+--bornes 1000
+
+qsub -N Jindo_longS_chrom08 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 8 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id JindoLong_S_chrom08 \
+--start 14600000 \
+--end 15000000 \
+--bornes 1000
+
+
+qsub -N Brown_longS_chrom08 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 8 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Brownlong_S_chrom08 \
+--start 17950000 \
+--end 18050000 \
+--bornes 1000
+
+
+qsub -N Jlong_chrom07 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 7 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr07.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jlong_chrom07_S \
+--start 10000000 \
+--end 10300000 \
+--bornes 1000
+
+
+qsub -N Jindo_chrom07 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 7 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr07.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jindo_chrom07_new \
+--start 11000000 \
+--end 13000000 \
+--bornes 1000
+
+
+
+qsub -N Jindo_chrom06 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 6 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr06.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jindo_chrom06_exI_new \
+--start 12000000 \
+--end 13000000 \
+--bornes 1000
+
+
+
+qsub -N Jtrop_chrom06 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 6 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr06.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Japtrop_chrom06_new \
+--start 13800000 \
+--end 14700000 \
+--bornes 1000
+
+
+
+qsub -N JindoII_chrom06 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 6 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr06.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jindo_chrom06_exII_new \
+--start 17000000 \
+--end 17500000 \
+--bornes 1000
+
+
+qsub -N ChinJTemp_chrom10 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 10 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr10.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jtemp_chrom10_new \
+--start 8000000 \
+--end 9000000 \
+--bornes 1000
+
+
+
+##################
+
+qsub -N Jtrop_ind3 -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 11 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jtrop_ind3_chrom11 \
+--start 4300000 \
+--end 4800000 \
+--bornes 1000
+
+
+
+qsub -N Jtrop_ind2 -V -q normal.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 11 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jtrop_ind2short_chrom11 \
+--start 6100000 \
+--end 6300000 \
+--bornes 1000
+
+
+qsub -N Jtrop_Jap -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 8 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr08.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jtrop_Japan_exchr8 \
+--start 15000000 \
+--end 15500000 \
+--bornes 1000
+
+
+qsub -N Jtrop_JapII -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 4 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr04.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jtrop_Japan_exchr4 \
+--start 1800000 \
+--end 2400000 \
+--bornes 1000
+
+
+qsub -N Jtrop_ind -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 11 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr11.geno \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jtrop_indMiddle_exchr11_test \
+--start 11300000 \
+--end 13300000 \
+--bornes 1000
+
+
+qsub -N Jtrop_ind -V -q bigmem.q -l mem_free=10G -b y python -u Darwin_focus.py \
+--CHR 2 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr02.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id Jtrop_indshort_exchr02 \
+--start 24500000 \
+--end 26000000 \
+--bornes 1000
+
+######
+###### Test coordinates
+######
+
+qsub -N coord_testI -V -q normal.q -l mem_free=10G -b y python -u Darwin_KDE.py \
+--CHR 1 \
+--geno /gs7k1/home/jgarcia/olde_home/FILTER_GENO/SplitGENO/GENO_chr01.geno \
+--fam /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.fam \
+--bim /gs7k1/home/jgarcia/olde_home/FILTER_GENO/F3G/NG_001.bim \
+--focus /work/jgarcia/PO_lunch/focus_core.txt \
+--id coord_testI \
+--start 2064986 \
+--end 2067417 \
+--bornes 0

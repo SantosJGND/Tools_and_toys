@@ -336,7 +336,7 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_w
 
 
 
-def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= [0,.3]):
+def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= [0,.3],height= 0,width= 0):
     
     tuples= list(it.combinations(ref_labels,2))
     x_range= list(range(len(freq_matrix)))
@@ -359,14 +359,19 @@ def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= 
         title= 'ref Fst,sorted= {}'.format(sort),
         yaxis=dict(
             title='Fst',
-            range= [0,.3]),
+            range= y_range),
         xaxis=dict(
             title= 'data sets: '.format(['extraction order','sorted'][int(sort)]))
     )
-
+    
     fig= go.Figure(data=fig_fst, layout=layout)
+    if width:
+        fig['layout'].update(width= width)
+    if height:
+        fig['layout'].update(height= height)
 
     iplot(fig)
+
 
 
 def freq_dist_plt(freqs_matrix,n_chose= 100,height= 500,width= 900):

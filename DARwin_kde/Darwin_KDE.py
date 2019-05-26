@@ -192,13 +192,13 @@ Construct = recursively_default_dict()
 for line in Geno:
     Codes = [0,nan,2,0,0,0,0,0,0,nan]
     d = Miss[Index][0]
-    if Index > end:
+    if d > end:
         break
     if len([x for x in Whose if line[x] =='1']) / float(len(Whose)) > Filter_Het:
         Index += 1
         continue
     if d >= start and d <= end:
-        for judas in SequenceStore.keys():
+        for judas in Whose:
             SequenceStore[judas].append(Codes[int(line[judas])])
         Win += 1
     Index += 1
@@ -224,7 +224,6 @@ NA_mark= [sum(np.isnan(x)) for x in Sentence.T]
 snp_exclude= [x for x in range(len(NA_mark)) if NA_mark[x] > .5 * len(NA_mark)]
 #####
 
-
 s1 = time.time()
 window_start = Index - Window + 1
 Seq = SequenceStore
@@ -248,6 +247,8 @@ Accurate = []
 params = {'bandwidth': np.linspace(np.min(data), np.max(data),Bandwidth_split)}
 grid = GridSearchCV(KernelDensity(algorithm = "ball_tree",breadth_first = False), params,verbose=0)
 
+normalize= 'Z'
+Control= False
 
 ######################################### 
 ############# TEST #####################
@@ -283,7 +284,7 @@ for D in range(len(Parents)):
     ### Neutrality tests of filtered reference pop KDE derived log-Likelihoods.
     #Normality.append(scipy.stats.mstats.normaltest(P_dist)[1])
     ######
-    if normalize == 'CDF':
+    if normalize == 'Z':
         if np.std(P_dist)== 0:
             Fist= np.array([int(Fist[x] in P_dist) for x in range(len(Fist))])
         else:
@@ -296,6 +297,7 @@ for D in range(len(Parents)):
         Fist = Fist * Mortal
     
     Accurate.append(Fist)
+
 
 Accurate= np.array(Accurate).T
 Guys= Accurate
@@ -329,11 +331,10 @@ for h in range(len(maxim)):
 
 maxim[where_X] = N_pops
 
-
 Original_labels= Whose_labs
 
 Indexes= [y for y in it.chain(*[Geneo[x] for x in Geneo_order])]
-Names= [Fam[y] for y in Indexes]
+Names= [Fam[y] for y in Whose]
 
 ID= args.id
 L= len(var_index)
@@ -360,7 +361,7 @@ Output.write('\n')
 
 for x in range(len(Whose)):
     Output.write(Names[x] + '\t')
-    seq= SequenceStore[Indexes[x]]
+    seq= Sentence[x]
     seq= [seq[x] for x in var_index]
     
     nantes= np.isnan(seq)

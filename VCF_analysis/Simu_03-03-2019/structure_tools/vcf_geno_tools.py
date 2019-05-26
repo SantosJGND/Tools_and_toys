@@ -153,9 +153,9 @@ def simple_read_vcf(filename,row_info= 5,header_info= 9,phased= False):
             
             for ind in range(header_len,len(line)):
                 locus= line[ind]
-                print(locus)
+                #print(locus)
                 alleles= locus.split(':')[0]
-                print(alleles)
+                #print(alleles)
                 if '.' in alleles:
                     alleles= ''.join([[x,'0'][int(x == '.')] for x in list(alleles)])
                 alleles= list(map(int, re.findall(r'\d+', alleles)))
@@ -292,7 +292,7 @@ def window_fst_sup(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,range_sample= [],r
 
 
 def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,supervised= True,include_who= [],
-                    range_sample= [130,600],rand_sample= 0,clsize= 15,cl_freqs= 5,Bandwidth_split= 20):
+                    range_sample= [130,600],rand_sample= 0,clsize= 15,cl_freqs= 5,Bandwidth_split= 20,quantile= 0.1,centre_d= True):
     
 
     kde_class_labels= labels1
@@ -330,7 +330,8 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
 
     Results = {
         'header': ['Chr','window'],
-        'info': []
+        'info': [],
+        'coords': []
     }
 
 
@@ -372,18 +373,34 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
 
         pca = PCA(n_components=ncomp, whiten=False,svd_solver='randomized').fit(Sequences)
         data = pca.transform(Sequences)
+        
+        from sklearn.preprocessing import scale
 
         if include_who:
             data= data[include,:]
+            
 
         ##### PC density
         PC= 0
 
         pc_places= data[:,PC]
 
+        if centre_d:
+            pc_places= scale(pc_places,with_std= False)
+            
         X_plot = np.linspace(-8, 8, 100)
 
-        kde = KernelDensity(kernel='gaussian', bandwidth=0.01).fit(np.array(pc_places).reshape(-1,1))
+        Focus_labels = list(range(data.shape[0]))
+
+        bandwidth_pc = estimate_bandwidth(pc_places.reshape(-1, 1), quantile=quantile, n_samples=len(pc_places))
+        if bandwidth_pc <= 1e-3:
+            bandwidth_pc = 0.01
+
+        bandwidth = estimate_bandwidth(data, quantile=quantile, n_samples=len(Focus_labels))
+        if bandwidth <= 1e-3:
+            bandwidth = 0.01
+
+        kde = KernelDensity(kernel='gaussian', bandwidth=bandwidth_pc).fit(np.array(pc_places).reshape(-1,1))
 
         log_dens= kde.score_samples(X_plot.reshape(-1,1))
 
@@ -399,14 +416,9 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
         ######################################
         ####### TEST global Likelihood #######
         ######################################
-        Focus_labels = list(range(data.shape[0]))
 
         #### Mean Shift approach
         ## from sklearn.cluster import MeanShift, estimate_bandwidth
-
-        bandwidth = estimate_bandwidth(data, quantile=0.2, n_samples=len(Focus_labels))
-        if bandwidth <= 1e-3:
-            bandwidth = 0.1
 
         ms = MeanShift(bandwidth=bandwidth, cluster_all=False, min_bin_freq=clsize)
         ms.fit(data[Focus_labels,:])
@@ -444,25 +456,27 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             Dist = kde.score_samples(data)
             P_dist= np.nan_to_num(P_dist)
             Dist= np.nan_to_num(Dist)
+            
             if np.std(P_dist) == 0:
                 Dist= np.array([int(Dist[x] in P_dist) for x in range(len(Dist))])
             else:
                 Dist = scipy.stats.norm(np.mean(P_dist),np.std(P_dist)).cdf(Dist)
             Dist= np.nan_to_num(Dist)
+            
             Construct['coords'].append([Chr,c,hill])
             Construct['info'].append(Dist)
-
+        
             ######################################### 
         ############# AMOVA ################
             #########################################
-
+        
         if supervised:
             labels= [x for x in kde_class_labels if x in ref_labels]
             Who= [z for z in it.chain(*[kde_label_dict[x] for x in ref_labels])]
             Ngps= len(ref_labels)
             
             
-            print(ref_labels)
+            #print(ref_labels)
             for hill in ref_labels:
 
                 if len(kde_label_dict[hill]) >= cl_freqs:
@@ -483,14 +497,13 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             Who= [Focus_labels[x] for x in Who]
 
         #
-        Pairwise= return_fsts2(np.array(these_freqs))
-        sim_fst.extend(Pairwise.fst)
+        if len(these_freqs) > 1:
+            Pairwise= return_fsts2(np.array(these_freqs))
+            sim_fst.extend(Pairwise.fst)
         
-
-
         if len(list(set(labels))) == 1:
-            Results['coords'].append([Chr,c])
-            Results['info'].append([AMOVA,Ngps])
+            Results['info'].append([Chr,c,0,1])
+            #Results['info'].append([AMOVA,Ngps])
             continue
 
         if amova:
@@ -498,30 +511,35 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             AMOVA,Cig = AMOVA_FM42(data[Who,:],labels,n_boot=0,metric= 'euclidean')
             print('counting: {}, Ngps: {}'.format(AMOVA,Ngps))
             Results['info'].append([Chr,c,AMOVA,Ngps])
-
+    
+    
     Results['info']= pd.DataFrame(np.array(Results['info']),columns= ['chrom','window','AMOVA','Ngps'])
     
-    X_plot = np.linspace(0, .3, 100)
+    if len(sim_fst) > 3:
+        X_plot = np.linspace(0, .3, 100)
+        
+        freq_kde = KernelDensity(kernel='gaussian', bandwidth=0.02).fit(np.array(sim_fst).reshape(-1,1))
 
-    freq_kde = KernelDensity(kernel='gaussian', bandwidth=0.01).fit(np.array(sim_fst).reshape(-1,1))
+        log_dens = freq_kde.score_samples(X_plot.reshape(-1,1))
 
-    log_dens = freq_kde.score_samples(X_plot.reshape(-1,1))
+        fig_roost_dens= [go.Scatter(x=X_plot, y=np.exp(log_dens), 
+                                    mode='lines', fill='tozeroy', name= '',
+                                    line=dict(color='blue', width=2))]
+        ##
 
-    fig_roost_dens= [go.Scatter(x=X_plot, y=np.exp(log_dens), 
-                                mode='lines', fill='tozeroy', name= '',
-                                line=dict(color='blue', width=2))]
-    ##
-
-    layout= go.Layout(
-        title= 'allele frequency distribution across clusters',
-        yaxis= dict(
-            title= 'density'
-        ),
-        xaxis= dict(
-            title= 'fst'
+        layout= go.Layout(
+            title= 'allele frequency distribution across clusters',
+            yaxis= dict(
+                title= 'density'
+            ),
+            xaxis= dict(
+                title= 'fst'
+            )
         )
-    )
 
-    fig = go.Figure(data=fig_roost_dens, layout= layout)
+        fig = go.Figure(data=fig_roost_dens, layout= layout)
+    
+    else:
+        fig= []
 
     return Frequencies, sim_fst, Results, Construct, pc_density, pc_coords, fig
