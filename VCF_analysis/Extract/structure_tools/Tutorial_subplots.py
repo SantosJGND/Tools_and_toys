@@ -7,6 +7,7 @@ import itertools as it
 import plotly.graph_objs as go
 from plotly import tools
 from plotly.offline import iplot
+import scipy
 
 from structure_tools.vcf_geno_tools import check_densities
 
@@ -265,7 +266,8 @@ def window_sample_plot(Windows,label_select,PCA_color_ref,plot_who= [],shade= []
     iplot(fig_pca_subplots)
 
 
-def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_windows= [],plot_choice= 'coords'):
+def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,y_range= [-5,12],
+                     range_windows= [],plot_choice= 'coords',width= 0,height= 0,qtl= 0.95,PC_sel= 0):
 
     x_range= range(len(pc_density))
     
@@ -273,10 +275,14 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_w
         x_range= range(range_windows[0],range_windows[1])
         
     if plot_choice == 'density':
+        from sklearn.preprocessing import scale
+        
+        denses= [z for z in it.chain(*pc_density)]
+        
         x_coords= [z for z in it.chain(*[[x] * 100 for x in x_range])]
         y_coords= [z for z in it.chain(*[list(np.linspace(-8,8,100)) for x in range(len(pc_density))])]
-        z_coords= [z for z in it.chain(*pc_density)]
-
+        z_coords= denses
+        
 
         fig_data= [go.Scatter(
         x= x_coords,
@@ -286,21 +292,21 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_w
             'color': z_coords,
             'colorscale':'Viridis',
             'line': {'width': 0},
-            'size': 8,
+            'size': 7,
             'symbol': 'circle',
-            "opacity": .6
+            "opacity": 1
         })
         ]
 
         layout = go.Layout(
             title= 'PC1 density',
             yaxis=dict(
-                title='PC1 density of projections across data sets'),
+                title='PC1 density of projections across data sets',
+                range= y_range),
             xaxis=dict(
                 title='Ideogram')
         )
-
-
+        
         fig= go.Figure(data=fig_data, layout=layout)
 
     if plot_choice== 'coords':
@@ -308,7 +314,7 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_w
         z_coords= [z for z in it.chain(*pc_coords)]
 
         class_colors= [z for z in it.chain(*[kde_class_labels for x in range(len(pc_coords))])]
-        class_colors= [PCA_color_ref[x-1] for x in class_colors]
+        class_colors= [PCA_color_ref[x] for x in class_colors]
 
         fig_data= [go.Scatter(
         x= x_coords,
@@ -316,24 +322,63 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,range_w
         mode= 'markers',
         marker= dict(
             color= class_colors,
-            size= 4,
+            size= 5,
             opacity= .8
         )
         )
         ]
+        
+        if len(list(set(kde_class_labels))) == 1:
+            inters= []
+            
+            for windl in pc_coords:
+                
+                ci = scipy.stats.norm.interval(qtl, loc=np.mean(windl), scale=np.std(windl))
+                inters.append(ci)
+            
+            inters= np.array(inters)
+            print(len(x_range))
+            print(inters.shape)
+            fig_data.append(
+                go.Scatter(
+                    x= list(x_range),
+                    y= list(inters[:,0]),
+                    mode= 'lines',
+                    name= 'Lb: {}'.format(qtl),
+                    marker= dict(
+                        color= 'black'
+                    )
+                )
+            )
+            fig_data.append(
+                go.Scatter(
+                    x= list(x_range),
+                    y= list(inters[:,1]),
+                    mode= 'lines',
+                    name= 'Ub: {}'.format(qtl),
+                    marker= dict(
+                        color= 'red'
+                    )
+                )
+            )
 
         layout = go.Layout(
-            title= 'PC1 coordinates',
+            title= 'PC{} coordinates'.format(PC_sel),
             yaxis=dict(
-                title='Individual positions along PC1 across data sets'),
+                title='Individual positions along PC1 across data sets',
+                range= y_range),
             xaxis=dict(
                 title='data sets: extraction order')
         )
 
         fig= go.Figure(data=fig_data, layout=layout)
-
-    iplot(fig)
-
+    
+    if width:
+        fig['layout'].update(width= width)
+    if height:
+        fig['layout'].update(height= height)
+    
+    return fig
 
 
 def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= [0,.3],height= 0,width= 0):
@@ -371,6 +416,7 @@ def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= 
         fig['layout'].update(height= height)
 
     iplot(fig)
+
 
 
 
