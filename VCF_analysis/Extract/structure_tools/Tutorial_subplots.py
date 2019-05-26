@@ -267,7 +267,7 @@ def window_sample_plot(Windows,label_select,PCA_color_ref,plot_who= [],shade= []
 
 
 def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,y_range= [-5,12],
-                     range_windows= [],plot_choice= 'coords',width= 0,height= 0,qtl= 0.95,PC_sel= 0):
+                     range_windows= [],plot_choice= 'coords',width= 0,height= 0,qtl= 0.95):
 
     x_range= range(len(pc_density))
     
@@ -363,7 +363,7 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,y_range
             )
 
         layout = go.Layout(
-            title= 'PC{} coordinates'.format(PC_sel),
+            title= 'PC1 coordinates',
             yaxis=dict(
                 title='Individual positions along PC1 across data sets',
                 range= y_range),
@@ -381,7 +381,8 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,y_range
     return fig
 
 
-def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= [0,.3],height= 0,width= 0):
+
+def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= [0,.3],height= 500,width= 500):
     
     tuples= list(it.combinations(ref_labels,2))
     x_range= list(range(len(freq_matrix)))
@@ -408,16 +409,15 @@ def fst_window_plot(freq_matrix,ref_labels,sort= True,window_range= [],y_range= 
         xaxis=dict(
             title= 'data sets: '.format(['extraction order','sorted'][int(sort)]))
     )
-    
+
     fig= go.Figure(data=fig_fst, layout=layout)
-    if width:
-        fig['layout'].update(width= width)
     if height:
         fig['layout'].update(height= height)
-
+    
+    if width:
+        fig['layout'].update(width= width)
+    
     iplot(fig)
-
-
 
 
 def freq_dist_plt(freqs_matrix,n_chose= 100,height= 500,width= 900):

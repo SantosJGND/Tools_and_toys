@@ -27,6 +27,51 @@ def recursively_default_dict():
 
 
 
+def geno_subset_random(genotype, summary, RG_info, ID_col,subset_col,Names,code= {},others= 'admx',Sn= 500, Sm= 10000):
+
+    ### Subset to acceptable range of accessions x markers.
+
+    Present= [x for x in range(len(Names)) if Names[x] in list(RG_info[ID_col])]
+
+    if len(Present) < genotype.shape[0]:
+        '{} IDs missing'.format(genotype.shape[0] - len(Present))
+
+    Nsample= sorted(np.random.choice(Present,Sn,replace= False))
+    Msample= sorted(np.random.choice(list(range(genotype.shape[1])),Sm,replace= False))
+
+    ###
+    gen_sample= np.array(genotype[Nsample,:])
+
+    gen_sample= np.array(gen_sample[:,Msample])
+
+    subsummary= summary.loc[Msample,:]
+
+    subsummary= subsummary.reset_index()
+
+    Names_select= [Names[x] for x in Nsample]
+
+    ###
+
+    print('gen_sample shape: {}, {}'.format(len(Nsample),len(Msample)))
+
+    ###
+
+    Name_idx= [list(RG_info[ID_col]).index(x) for x in Names_select]
+    code_vec= [RG_info[subset_col][x] for x in Name_idx]
+
+    #code_vec= [code_vector[x] for x in Nsample]
+    code_vec= [[x,others][int(x not in code.keys())] for x in code_vec]
+
+    code_vec= [code[x] for x in code_vec]
+
+    code_lib= {
+        z:[x for x in range(len(code_vec)) if code_vec[x] == z] for z in list(set(code_vec))
+    }
+
+    return gen_sample, subsummary, code_vec, code_lib, Nsample, Msample
+
+
+
 def read_geno_nanum(filename, row_info= 6,header_info= 9,phased= False):
 
     info_summ= {}
@@ -292,7 +337,7 @@ def window_fst_sup(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,range_sample= [],r
 
 
 def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,supervised= True,include_who= [],
-                    range_sample= [130,600],rand_sample= 0,clsize= 15,cl_freqs= 5,Bandwidth_split= 20,quantile= 0.1,centre_d= True):
+                    range_sample= [130,600],rand_sample= 0,clsize= 15,cl_freqs= 5,Bandwidth_split= 20,quantile= 0.1,centre_d= True,PC_sel= 0):
     
 
     kde_class_labels= labels1
@@ -381,7 +426,7 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
             
 
         ##### PC density
-        PC= 0
+        PC= PC_sel
 
         pc_places= data[:,PC]
 
@@ -543,3 +588,66 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
         fig= []
 
     return Frequencies, sim_fst, Results, Construct, pc_density, pc_coords, fig
+
+
+def get_sound_coords(pc_coords_s,sampleRate = 44100,
+                                frequency = 1500,
+                                length = 5,
+                                group= 2,
+                                PC_select= 1,
+                                qtl= 0.95
+                                ):
+    inters= []
+    for windl in pc_coords_s:
+
+        ci = scipy.stats.norm.interval(qtl, loc=np.mean(windl), scale=np.std(windl))
+        inters.append(ci)
+
+    inters= np.array(inters)
+
+    from scipy.interpolate import interp1d
+    q= inters[:,1] - inters[:,0]
+
+    max_q= max(q)
+    q= q / max_q
+
+    ###
+    ###
+    ###
+
+    t = np.linspace(0, length, inters.shape[0])
+    f2= interp1d(t, q, kind='cubic')
+
+    xfloor = np.linspace(0, length, sampleRate * length)
+    roof= f2(xfloor)
+    y = np.sin(np.sin(xfloor * frequency) * roof) 
+    y= y * max_q / 2
+    
+    print_some= np.linspace(0,len(xfloor)-1,1000)
+    print_some= [int(x) for x in print_some]
+
+    fig_test= [go.Scatter(
+        x= [xfloor[e] for e in print_some],
+        y= [y[e] for e in print_some]
+    )]
+    
+    layout= go.Layout(
+        title= 'gp{}_pc{}_sR{}_Hz{}_l{}'.format(group,PC_select,sampleRate,frequency,length),
+        xaxis= dict(
+            title= 'seconds'
+        ),
+        yaxis= dict(
+            title= 'amp'
+        )
+    )
+    
+    fig_freqs= go.Figure(data= fig_test,layout= layout)
+
+
+    from scipy.io import wavfile
+    
+
+    wavfile.write('gp{}_pc{}_sR{}_Hz{}_l{}.wav'.format(group,PC_select,sampleRate,frequency,length), sampleRate, y)
+
+    return fig_freqs
+

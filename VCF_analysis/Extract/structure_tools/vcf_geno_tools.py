@@ -588,3 +588,66 @@ def window_analysis(Windows,ref_labels,labels1,Chr= 1,ncomp= 4,amova= True,super
         fig= []
 
     return Frequencies, sim_fst, Results, Construct, pc_density, pc_coords, fig
+
+
+def get_sound_coords(pc_coords_s,sampleRate = 44100,
+                                frequency = 1500,
+                                length = 5,
+                                group= 2,
+                                PC_select= 1,
+                                qtl= 0.95
+                                ):
+    inters= []
+    for windl in pc_coords_s:
+
+        ci = scipy.stats.norm.interval(qtl, loc=np.mean(windl), scale=np.std(windl))
+        inters.append(ci)
+
+    inters= np.array(inters)
+
+    from scipy.interpolate import interp1d
+    q= inters[:,1] - inters[:,0]
+
+    max_q= max(q)
+    q= q / max_q
+
+    ###
+    ###
+    ###
+
+    t = np.linspace(0, length, inters.shape[0])
+    f2= interp1d(t, q, kind='cubic')
+
+    xfloor = np.linspace(0, length, sampleRate * length)
+    roof= f2(xfloor)
+    y = np.sin(np.sin(xfloor * frequency) * roof) 
+    y= y * max_q / 2
+    
+    print_some= np.linspace(0,len(xfloor)-1,1000)
+    print_some= [int(x) for x in print_some]
+
+    fig_test= [go.Scatter(
+        x= [xfloor[e] for e in print_some],
+        y= [y[e] for e in print_some]
+    )]
+    
+    layout= go.Layout(
+        title= 'gp{}_pc{}_sR{}_Hz{}_l{}'.format(group,PC_select,sampleRate,frequency,length),
+        xaxis= dict(
+            title= 'seconds'
+        ),
+        yaxis= dict(
+            title= 'amp'
+        )
+    )
+    
+    fig_freqs= go.Figure(data= fig_test,layout= layout)
+
+
+    from scipy.io import wavfile
+    
+
+    wavfile.write('gp{}_pc{}_sR{}_Hz{}_l{}.wav'.format(group,PC_select,sampleRate,frequency,length), sampleRate, y)
+
+    return fig_freqs
+
