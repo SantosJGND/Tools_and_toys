@@ -363,9 +363,9 @@ def PC_analysis_plot(pc_density,pc_coords,kde_class_labels,PCA_color_ref,y_range
             )
 
         layout = go.Layout(
-            title= 'PC{} coordinates'.format(PC_sel),
+            title='Individual positions along PC{} across data sets'.format(PC_sel),
             yaxis=dict(
-                title='Individual positions along PC1 across data sets',
+                title= 'PC{} coordinates'.format(PC_sel),
                 range= y_range),
             xaxis=dict(
                 title='data sets: extraction order')
