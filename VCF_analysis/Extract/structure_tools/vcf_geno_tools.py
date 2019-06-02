@@ -649,5 +649,5 @@ def get_sound_coords(pc_coords_s,sampleRate = 44100,
 
     wavfile.write('gp{}_pc{}_sR{}_Hz{}_l{}.wav'.format(group,PC_select,sampleRate,frequency,length), sampleRate, y)
 
-    return fig_freqs
+    return fig_freqs, y
 
