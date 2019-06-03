@@ -87,3 +87,12 @@ information in novel data sets.
 >Frequency feed: [simulation basic](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Simu_03-03-2019/custom_manipulation.ipynb)
 
 >[README](/VCF_analysis)
+
+
+## Toys
+
+- **Genome Sampler**  - *produce sound samples from genetic data*
+
+>jupyter notebook: [Genome sampler](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/Music/Genome_sampling.ipynb)
+
+>[README](/Music)
