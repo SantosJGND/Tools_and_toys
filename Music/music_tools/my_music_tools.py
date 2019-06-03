@@ -492,3 +492,167 @@ def meanfreq_plot(samps_tracks,coords,ts_list,peaks,height= 0,width= 0):
 
 
 
+def get_amps(dict_coords,length= 10,sampleRate= 44100,qtl= .95):
+
+    xfloor = np.linspace(0, length, sampleRate * length)
+    amp_stock= []
+    max_q_list= []
+
+    for access in dict_coords.keys():
+
+        inters= []
+        for windl in dict_coords[access]['coords']:
+
+            ci = scipy.stats.norm.interval(qtl, loc=np.mean(windl), scale=np.std(windl))
+            inters.append(ci)
+
+        inters= np.array(inters)
+
+        from scipy.interpolate import interp1d
+        q= inters[:,1] - inters[:,0]
+
+        max_q= max(q)
+        q= q / max_q
+
+        ###
+        ###
+        ###
+
+        t = np.linspace(0, length, inters.shape[0])
+        f2= interp1d(t, q, kind='cubic')
+
+        roof= f2(xfloor)
+        #roof= roof * max_q / 2
+
+        max_q_list.append(max_q)
+        amp_stock.append(roof)
+
+
+    amp_stock= np.array(amp_stock)
+
+    return amp_stock, max_q_list
+
+
+
+def match_samples(samps_tracks,coords,amp_stock, max_q_list,sr= 44100,seg_length= 512,length= 10,low_N= 2,N_compares= 50):
+    
+    t_total= np.linspace(0,length,sr * int(length))
+    step = int(seg_length // 2)
+    seg_time= seg_length / sr
+
+    #xfloor = np.linspace(0, length, sampleRate * length)
+
+    y_composition= np.zeros(sr * int(length))
+    from scipy.spatial import distance
+
+    for cl in coords.keys():
+
+        if max(coords[cl]) - min(coords[cl]) > len(coords[cl]) * 100:
+            continue
+
+        y_base= np.zeros(sr * int(length))
+        
+        ### get frequency vector and mean for this cluster
+        frequency= np.mean([samps_tracks[x,1] for x in coords[cl]])
+        frequencies_is= np.array([samps_tracks[x,1] for x in coords[cl]])
+        frequencies_is= [frequencies_is[0],*frequencies_is,frequencies_is[-1]]
+        #print(frequency)
+
+        ## get cluster amplitude mean and vector
+        amps_cl= np.array([samps_tracks[x,2] for x in coords[cl]])
+        amps_cl= [min(amps_cl),*amps_cl,max(amps_cl)]
+        amp_here= np.mean(amps_cl)
+        
+        ## get times amp mean and vector
+        times_cl= np.array(sorted([samps_tracks[x,0] for x in coords[cl]]))
+        times_cl= [min(times_cl) - seg_time / 2,*times_cl,max(times_cl) + seg_time / 2]
+
+        ## ignore if cluster is too small
+        if len(amps_cl) < low_N:
+            continue
+        
+        ### change duplicates. Really just make duplicates appear as an
+        ### extra point half a segment length further away.
+        while len(list(set(times_cl))) < len(times_cl):
+            z_new= []
+            for tpo in times_cl:
+                if tpo in z_new:
+                    z_new.append(tpo + seg_time / 2)
+                    continue
+                z_new.append(tpo)
+
+            times_cl= z_new
+
+        
+        ### interpolate prepare time
+        t_zone= [min(times_cl),max(times_cl)]
+        time_frame= t_zone[1] - t_zone[0]
+        t1 = np.linspace(t_zone[0], t_zone[1], time_frame * sr)
+
+        ### interpolate - amp
+        from scipy.interpolate import interp1d
+        f2= interp1d(times_cl,amps_cl, kind='quadratic')
+        amp_synth_cl= f2(t1)
+
+        ### interpolate - freq
+        f3= interp1d(times_cl,frequencies_is, kind='quadratic')
+        freq_synth_cl= f3(t1)
+
+        ###    
+        cl_size= len(amps_cl)
+        cl_sample_size= cl_size * seg_length #
+        
+        ### amps are what we have to compare so that is what we will use.
+        ### being by scaling amplitude. 
+        amp_synth_cl= scale(amp_synth_cl) 
+
+        ### Chose where to sample from in the genome amplitude array.
+        ### The array possesses a number of population tracks of the same length. 
+        ### selection and scaling will be done simulateneously for all tracks at the same positions.
+        where_to= np.random.choice(list(range(amp_stock.shape[1] - len(t1))), N_compares)
+
+        Base= []
+        intel= []
+
+        for rep in where_to:
+
+            # 
+            Block= amp_stock[:,rep:rep + len(t1)]
+
+            Block= scale(Block,axis= 1)
+            
+            inteligence= [[rep,x] for x in range(amp_stock.shape[0])]
+            intel.extend(inteligence)
+            Base.extend(Block)
+
+        Base= np.array(Base)
+        
+        ## calculate the correlation between the true (albeit interpolated) amplitude vector,
+        ## and all the amp vectors sampled from the geno data.
+        dists= distance.cdist(amp_synth_cl.reshape(1,-1), Base, 'correlation')
+        
+        ## chose one. 
+        who= np.argmax(dists)
+        who= intel[who]
+
+        rep= who[0]
+        Block= amp_stock[who[1],rep:rep + len(t1)]
+        
+        ### produce a sin wave of the correct frequency that respects the amplitude observed in
+        ### geno data. 
+        
+        y_sin = np.sin(t1 * frequency * np.pi * 2) * (Block * max_q_list[who[1]] / 2)
+        y_sin= np.array(y_sin)
+        
+        ### overlay onto the final track.
+        timepoint= abs(t_total - t_zone[0])
+        timepoint= np.argmin(timepoint)
+
+        if timepoint + len(t1) > y_base.shape[0]:
+            y_sin= y_sin[:(y_base.shape[0] - timepoint)]
+
+        y_composition[timepoint:(timepoint + len(t1))] += y_sin
+
+    return y_composition
+
+

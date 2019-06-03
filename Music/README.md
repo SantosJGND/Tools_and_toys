@@ -8,5 +8,5 @@ The [Genome Sampler](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_to
 
 I tried to use sound samples produced from genetic data to reproduce a song. 
 
-The final contribution of genetic data to the sound produce is actually minimal, but it was an interesting exercise and
+The final contribution of genetic data to the sound produced is actually minimal, but it was an interesting exercise and
 the result is satisfactory (for very clean, very short samples).
