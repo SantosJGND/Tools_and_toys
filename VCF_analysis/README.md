@@ -49,7 +49,7 @@ to capture local clusters and manually modify the labels of the recovered haplot
 Use for informed evolutionary inference of local patterns of structure.
 
 
-- [Coalescence - simulation](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Simu_17-03-2019/vcf_analysis.ipynb)
+- [Coalescence - simulation](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/Simu_03-03-2019/vcf_analysis.ipynb)
 
 - [Structure manipulation - simulation](https://nbviewer.jupyter.org/github/SantosJGND/Tools_and_toys/blob/master/VCF_analysis/vcf_analysis/vcf_analysis.ipynb)
 

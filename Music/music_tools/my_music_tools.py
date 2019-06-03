@@ -148,10 +148,12 @@ def plot_frame(fr_array,frame_plot,spec_fs,height= 0,width= 0):
         )
     )
     
+    figure= go.Figure(data= fig, layout= layout)
+    
     if height:
-        layout.update(height= height)
+        figure['layout'].update(height= height)
     if width:
-        layout.update(width= width)
+        figure['layout'].update(width= width)
 
     iplot(fig)
 
