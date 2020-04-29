@@ -22,7 +22,7 @@ def recursively_default_dict():
 def extract_profiles(global_data,target_ind_dict):
     ## estimate the bandwith
     params = {'bandwidth': np.linspace(np.min(global_data), np.max(global_data),25)}
-    grid = GridSearchCV(KernelDensity(algorithm = "ball_tree",breadth_first = False), params,verbose=0)
+    grid = GridSearchCV(KernelDensity(algorithm = "ball_tree",breadth_first = False), params,verbose=0, iid= False,cv=5)
     
     cluster_profiles= {x:[] for x in target_ind_dict.keys()}
     

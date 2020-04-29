@@ -153,9 +153,9 @@ def simple_read_vcf(filename,row_info= 5,header_info= 9,phased= False):
             
             for ind in range(header_len,len(line)):
                 locus= line[ind]
-                print(locus)
+                #print(locus)
                 alleles= locus.split(':')[0]
-                print(alleles)
+                #print(alleles)
                 if '.' in alleles:
                     alleles= ''.join([[x,'0'][int(x == '.')] for x in list(alleles)])
                 alleles= list(map(int, re.findall(r'\d+', alleles)))

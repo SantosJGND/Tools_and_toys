@@ -77,7 +77,7 @@ def Rec_prob_modal(angle,range_windows,modes,multiplier,N= 100,bandwidth= .2):
     
     kde = KernelDensity(kernel='gaussian', bandwidth=bandwidth).fit(sam)
     
-    log_dens = kde.score_samples(progress)
+    log_dens = kde.score_samples(sam)
     
     Cop= np.exp(log_dens)[0] * multiplier
     #print(Cop)

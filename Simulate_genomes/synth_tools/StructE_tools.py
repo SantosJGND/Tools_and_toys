@@ -395,7 +395,11 @@ def return_fsts2(freq_array):
     for comb in it.combinations(H.keys(),2):
         P= [sum([freq_array[x,i] for x in comb]) / len(comb) for i in range(freq_array.shape[1])]
         HT= [2 * P[x] * (1 - P[x]) for x in range(len(P))]
-        per_locus_fst= [[(HT[x] - np.mean([H[p][x] for p in comb])) / HT[x],0][int(HT[x] == 0)] for x in range(len(P))]
+        flag_nones= [[HT[x],1][int(HT[x] == 0)] for x in range(len(P))]
+
+        per_locus_fst= [(HT[x] - np.mean([H[p][x] for p in comb])) / flag_nones[x] for x in range(len(P))]
+
+        #per_locus_fst= [[(HT[x] - np.mean([H[p][x] for p in comb])) / HT[x],0][int(HT[x] == 0)] for x in range(len(P))]
         per_locus_fst= np.nan_to_num(per_locus_fst)
         Fst= np.mean(per_locus_fst)
 
