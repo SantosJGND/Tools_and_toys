@@ -6,7 +6,7 @@ Genomics data sets that combine dense marker data with breadth of sampling are b
 number of species. Be it for historical inference, to study recombination, selection or to attempt genomic prediction,
 geneticists face in genomic data sets two main problems: (i) the more straighforward issue of size, i.e. computational 
 load and speed, (ii) the more abstract problem of harnessing statistics descriptive of local genomic structure to produce 
-informative outputs. 
+informative outputs.
 
 We need to work with measurements that are light and that we understand, that are informative of patterns in fundamental
 properties of the data. And we need to deploy these statistics and relate the distributions produced to that of genomic 
