@@ -217,7 +217,9 @@ def mpl_target_ideo(gp,
             start= Chromo_coord.iloc[row,:].start
             end= Chromo_coord.iloc[row,:].end
             
-            trigger= [int(x) for x in Chromo_coord.iloc[row,:].members.split('.') if int(x) in order]
+            trigger= [x for x in Chromo_coord.iloc[row,:].members.split('.') if int(x) in order]
+            trigger= [x for x in trigger if x]
+            tringer= [int(x) for x in trigger]
             
             label= Chromo_coord.iloc[row,:].label 
             color= Colors[-1]

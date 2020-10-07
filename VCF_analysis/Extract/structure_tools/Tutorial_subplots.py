@@ -176,7 +176,7 @@ def plot_global_classes(feats,label_lib_I,label_lib_II,color_vec_I,color_vec_II,
     iplot(fig)
 
 
-def plot_global_pca(feats,label_select,PCA_color_ref,title= '',height= 500,width= 950):
+def plot_global_pca(feats,label_select,PCA_color_ref,labels= [],title= '',height= 500,width= 950):
     ##
 
     from plotly import tools
@@ -189,12 +189,18 @@ def plot_global_pca(feats,label_select,PCA_color_ref,title= '',height= 500,width
 
         coords= label_select
 
+
         for i in coords.keys():
+            if not labels:
+                label_gp= [str(i)] * len(coords[i]) 
+            else:
+                label_gp= [labels[x] for x in coords[i]]
             trace= go.Scatter(
             x = feats[coords[i],0],
             y = feats[coords[i],subp + 1],
             mode= "markers",
             name= str(i),
+            text= labels,
             marker= {
             'color': PCA_color_ref[i],
             'line': {'width': 0},

@@ -27,16 +27,24 @@ def recursively_default_dict():
 
 
 
-def geno_subset_random(genotype, summary, RG_info, ID_col,subset_col,Names,code= {},others= 'admx',Sn= 500, Sm= 10000):
+def geno_subset_random(genotype, summary, RG_info, ID_col,subset_col,Names,include= [],code= {},others= 'admx',Sn= 500, Sm= 10000):
 
     ### Subset to acceptable range of accessions x markers.
 
     Present= [x for x in range(len(Names)) if Names[x] in list(RG_info[ID_col])]
+    if include:
+        presinc= [x for x in include if x in Names]
+        presidx= [Names.index(x) for x in presinc]
+        print('{}/{} of requested names present.'.format(len(presinc),len(include)))
 
     if len(Present) < genotype.shape[0]:
         '{} IDs missing'.format(genotype.shape[0] - len(Present))
 
     Nsample= sorted(np.random.choice(Present,Sn,replace= False))
+    if include:
+        Nsample.extend(presidx)
+        Nsample= sorted(list(set(Nsample)))
+
     Msample= sorted(np.random.choice(list(range(genotype.shape[1])),Sm,replace= False))
 
     ###

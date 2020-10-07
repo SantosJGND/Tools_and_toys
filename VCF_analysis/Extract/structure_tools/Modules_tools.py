@@ -126,6 +126,9 @@ def return_fsts(vector_lib,pops):
 
 ### Dont return global Fst
 def return_fsts2(freq_array):
+    '''
+    calculate pairwise fst from array of frequency vectors. 
+    '''
     pops= range(freq_array.shape[0])
     H= {pop: [1-(freq_array[pop,x]**2 + (1 - freq_array[pop,x])**2) for x in range(freq_array.shape[1])] for pop in range(freq_array.shape[0])}
     Store= []
@@ -133,15 +136,13 @@ def return_fsts2(freq_array):
     for comb in it.combinations(H.keys(),2):
         P= [sum([freq_array[x,i] for x in comb]) / len(comb) for i in range(freq_array.shape[1])]
         HT= [2 * P[x] * (1 - P[x]) for x in range(len(P))]
-        per_locus_fst= [[(HT[x] - np.mean([H[p][x] for p in comb])) / HT[x],0][int(HT[x] == 0)] for x in range(len(P))]
+        per_locus_fst= [[(HT[x] - np.mean([H[p][x] for p in comb])) / [HT[x],1][int(HT[x] == 0)],0][int(HT[x] == 0)] for x in range(len(P))]
         per_locus_fst= np.nan_to_num(per_locus_fst)
         Fst= np.mean(per_locus_fst)
 
         Store.append([comb,Fst])
     
     return pd.DataFrame(Store,columns= ['pops','fst'])
-
-
 
 ###################################################################""""
 ### Local sampling correct (Notebook 8.)
